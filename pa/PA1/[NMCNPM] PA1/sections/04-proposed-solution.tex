@@ -1,0 +1,146 @@
+\section{Proposed Solution}
+
+\subsection{Preliminary Architecture}
+
+Figure~\ref{fig:context} shows the C4 System Context diagram of Room4U.
+Students use Room4U to browse rooms, submit booking requests and track
+their status. Library administrators use it to approve or reject requests,
+cancel approved bookings and manage rooms and maintenance periods.
+Firebase Authentication is the only external system: it verifies user
+identities, while Room4U itself checks each user's role and permissions and
+stores all business data. The database is an internal part of Room4U and
+therefore does not appear as an external system at this level. Containers,
+components and technical mechanisms are detailed in PA3.
+
+\begin{figure}[H]
+\centering
+\hyphenpenalty=10000 \exhyphenpenalty=10000 \relax
+\begin{tikzpicture}[
+  font=\small,
+  person/.style={draw=c4person, fill=c4person, text=white, rounded corners=5pt,
+                 minimum width=4.2cm, minimum height=1.9cm,
+                 text width=3.8cm, align=center, inner sep=4pt},
+  system/.style={draw=c4system, fill=c4system, text=white, rounded corners=5pt,
+                 minimum width=4.8cm, minimum height=2.2cm,
+                 text width=4.4cm, align=center, inner sep=4pt},
+  external/.style={draw=c4ext, fill=c4ext, text=white, rounded corners=5pt,
+                   minimum width=4.4cm, minimum height=1.9cm,
+                   text width=4.0cm, align=center, inner sep=4pt},
+  rel/.style={-{Stealth[length=2.6mm]}, thick, shorten >=1pt, shorten <=1pt},
+  lbl/.style={font=\footnotesize, text width=3.3cm, align=center,
+              fill=white, inner sep=2pt}
+]
+\node[person]   (student) at (-4.6, 4.4) {\textbf{Student}\\{\footnotesize [Person]}\\{\footnotesize Looks for study rooms and requests bookings}};
+\node[person]   (admin)   at ( 4.6, 4.4) {\textbf{Library Administrator}\\{\footnotesize [Person]}\\{\footnotesize Processes requests and manages rooms}};
+\node[system]   (r4u)     at ( 0.0, 0.0) {\textbf{Room4U}\\{\footnotesize [Software System]}\\{\footnotesize Website for booking library study rooms}};
+\node[external] (fb)      at ( 0.0,-4.0) {\textbf{Firebase Authentication}\\{\footnotesize [External System]}\\{\footnotesize Sign-in and identity service}};
+
+\draw[rel] (student.south) -- node[lbl] {Searches rooms, submits and tracks booking requests} (r4u.north west);
+\draw[rel] (admin.south)   -- node[lbl] {Approves or rejects requests, manages rooms and maintenance} (r4u.north east);
+\draw[rel] (r4u.south)     -- node[lbl] {Verifies user identity tokens} (fb.north);
+\end{tikzpicture}
+\caption{C4 System Context diagram of Room4U. The database is an internal
+part of Room4U and is therefore not drawn as an external system.}
+\label{fig:context}
+\end{figure}
+
+\textbf{Preliminary business rules.} The rules below are working assumptions
+used for scoping and estimation. They will be confirmed and refined in PA2.
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+  \item The library opens from 08:00 to 20:00 every day. All times use the
+        \texttt{Asia/Ho\_Chi\_Minh} time zone.
+  \item A booking starts on a 30-minute boundary (a PA1 planning assumption
+        to be confirmed and detailed in PA2), lasts between 30 and 120 minutes,
+        and can be made at most 7 days in advance.
+  \item A Pending request does not hold a room. When an administrator approves
+        a request, the back end re-checks availability, and concurrent approvals
+        are guarded by a transaction or locking mechanism designed in PA3.
+  \item Two time intervals $[\mathit{start},\mathit{end})$ conflict when
+        $\mathit{start}_1 < \mathit{end}_2$ and $\mathit{start}_2 < \mathit{end}_1$.
+        A booking that ends at 10:00 therefore does not conflict with one that
+        starts at 10:00.
+  \item A student may cancel their own Pending request or Approved booking
+        before its start time. Rejected and Cancelled bookings do not occupy
+        the room.
+  \item An administrator cannot create a maintenance period that overlaps an
+        Approved booking; the affected bookings must first be cancelled with
+        a reason. A suspended room does not accept new requests.
+\end{itemize}
+
+\subsection{Technology Stack}
+
+\begin{table}[H]
+\centering
+\caption{Technology stack of Room4U.}
+\label{tab:stack}
+\begin{tabularx}{\textwidth}{@{}L{2.9cm}L{4.4cm}Y@{}}
+\toprule
+\textbf{Layer} & \textbf{Technology} & \textbf{Reason for choice}\\
+\midrule
+Front end & HTML, CSS, JavaScript &
+  Suitable for a demo with a small number of screens; runs in any modern
+  browser without extra tooling.\\
+Back end & Node.js with Express &
+  Same language as the front end; a layered structure (routes, services,
+  repositories) keeps the business rules in one place.\\
+Database & PostgreSQL &
+  Rooms, users and bookings are relational data; transactions and
+  constraints help prevent double booking.\\
+Authentication & Firebase Authentication &
+  Handles sign-in for pre-created accounts; the back end verifies tokens and
+  checks the roles stored in the business database.\\
+Hosting and deployment & Linux VPS with Nginx &
+  Runs the Node.js back end and PostgreSQL; HTTPS, with configuration kept
+  in environment variables.\\
+Testing and CI & Vitest, Supertest, Playwright, GitHub Actions &
+  Unit, API, and end-to-end tests are planned. Initial GitHub Actions CI setup
+  is planned for W8, with checks added as implementation proceeds.\\
+Source control and tasks & GitHub, GitHub Projects &
+  GitHub Projects tracks WBS-linked tasks; the agreed workflow requires
+  pull-request review before merge.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The stack is a planning decision rather than a final architecture choice.
+During the design phase (Weeks 6--7) the team will validate it with a short
+environment spike: running the front end, back end and database together on a
+development machine, verifying a Firebase ID token in the Express back end, and
+making a trial deployment to a Linux server. If any step fails, the
+alternative will be recorded as an Architecture Decision Record in PA3.
+Secrets such as API keys and service-account files will never be committed to
+the repository.
+
+\subsection{Hardware and Operating Environment}
+
+Table~\ref{tab:env} lists the environments needed to develop, test and
+demonstrate Room4U.
+
+\begin{table}[H]
+\centering
+\caption{Development, test and demonstration environments.}
+\label{tab:env}
+\begin{tabularx}{\textwidth}{@{}L{3.3cm}Y@{}}
+\toprule
+\textbf{Environment} & \textbf{Planning assumption}\\
+\midrule
+Development machines &
+  Laptops running Windows, macOS or Linux with at least 8~GB of RAM, Git,
+  Visual Studio Code and one agreed Node.js LTS version.\\
+Demo server &
+  Linux server with 2 vCPUs, 4~GB of RAM and 20~GB of storage, hosting one
+  back end instance and one database. These figures are assumptions and will
+  be checked with a smoke test.\\
+User devices &
+  Laptops or phones with a modern browser. Testing focuses on Chrome and Edge
+  on desktop, plus one mobile viewport.\\
+Test data &
+  Eight simulated rooms; pre-created Student and Administrator accounts; data
+  sets covering schedule conflicts, time limits, capacity limits and
+  permissions.\\
+Demo operation &
+  HTTPS, Internet access, a Firebase test project, a data backup before the
+  demo, and a backup video in case the network fails.\\
+\bottomrule
+\end{tabularx}
+\end{table}

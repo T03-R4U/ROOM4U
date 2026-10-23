@@ -1,0 +1,59 @@
+\section{Risk Management}
+
+Probability and Loss are converted using the lecture scales below. Calculate risk exposure (RE) by multiplying the numeric scores directly.
+\[
+\mathrm{RE}=\mathrm{Probability}\times\mathrm{Loss}.
+\]
+
+\begin{tabular}{@{}L{0.25\textwidth}L{0.12\textwidth}L{0.35\textwidth}L{0.12\textwidth}@{}}
+\toprule
+Probability & Score & Loss & Score \\
+\midrule
+Unlikely & 10 & Negligible & 10 \\
+Seldom & 25 & Insignificant & 25 \\
+Occasional & 50 & Moderate & 50 \\
+Likely & 75 & Serious & 75 \\
+Frequently & 90 & Catastrophic & 90 \\
+\bottomrule
+\end{tabular}
+
+\subsection{Risk Register}
+\small
+\setlength{\tabcolsep}{1.25pt}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\extrarowheight}{2pt}
+\begin{longtable}{@{}|>{\centering\arraybackslash\setlength{\parindent}{0pt}\setlength{\parskip}{0pt}\hyphenpenalty=10000\relax}p{0.03\textwidth}|>{\raggedright\arraybackslash\setlength{\parindent}{0pt}\setlength{\parskip}{0pt}\hyphenpenalty=10000\relax}p{0.18\textwidth}|>{\raggedright\arraybackslash\setlength{\parindent}{0pt}\setlength{\parskip}{0pt}\hyphenpenalty=10000\relax}p{0.15\textwidth}|>{\raggedright\arraybackslash\setlength{\parindent}{0pt}\setlength{\parskip}{0pt}\hyphenpenalty=10000\relax}p{0.115\textwidth}|>{\raggedright\arraybackslash\setlength{\parindent}{0pt}\setlength{\parskip}{0pt}\hyphenpenalty=10000\relax}p{0.13\textwidth}|>{\centering\arraybackslash\setlength{\parindent}{0pt}\setlength{\parskip}{0pt}\hyphenpenalty=10000\relax}p{0.055\textwidth}|>{\raggedright\arraybackslash\setlength{\parindent}{0pt}\setlength{\parskip}{0pt}\hyphenpenalty=10000\relax}p{0.215\textwidth}|>{\centering\arraybackslash\setlength{\parindent}{0pt}\setlength{\parskip}{0pt}\hyphenpenalty=10000\relax}p{0.065\textwidth}|@{}}
+\hline
+ID & Risk & Type & Probability & Loss & RE & Mitigation / Contingency & Owner \\
+\hline
+\endfirsthead
+\hline
+ID & Risk & Type & Probability & Loss & RE & Mitigation / Contingency & Owner \\
+\hline
+\endhead
+\hline
+R1 & Concurrent approvals may create overlapping bookings and disrupt the core reservation workflow. & Technology & Occasional (50) & Catastrophic (90) & 4,500 & \textbf{Mitigation:} Design conflict checks in PA3; specify concurrent-approval tests in PA4 and execute them during PA5.\newline\textbf{Contingency:} Disable faulty approval; fix and retest before PA5 submission. & Phúc \\
+\hline
+R2 & If a key team member is unavailable during PA5, Must-have features may remain incomplete by the PA5 submission deadline. & People & Occasional (50) & Catastrophic (90) & 4,500 & \textbf{Mitigation:} Confirm weekly availability; assign a backup; hand over code and documentation regularly.\newline\textbf{Contingency:} Reassign tasks to the backup, revise the schedule, and notify the TA if needed. & Long \\
+\hline
+R3 & Changes to booking, cancellation, or approval rules after baseline may force redesign, recoding, and retesting. & Requirements & Occasional (50) & Serious (75) & 3,750 & \textbf{Mitigation:} Review booking rules and exceptions in PA2; document the agreed requirements baseline.\newline\textbf{Contingency:} Raise a change request; estimate schedule and effort impact; update the baseline after approval. & Thông \\
+\hline
+R4 & Actual effort may exceed estimates, leaving insufficient time for integration, testing, and deployment. & Estimation & Likely (75) & Serious (75) & 5,625 & \textbf{Mitigation:} Decompose WBS packages; review estimates; compare actual effort with estimates weekly.\newline\textbf{Contingency:} Under the team's approved trigger, when a work package's forecast total effort (actual effort to date plus estimated remaining effort) exceeds 120\% of its approved estimate, the PM assesses dependencies, remaining capacity, and milestone impact, then reallocates work or raises a change request. & Long \\
+\hline
+R5 & Inconsistent API contracts or booking states may break front-end and back-end integration. & Technology & Occasional (50) & Moderate (50) & 2,500 & \textbf{Mitigation:} Agree on API contracts and sample data in PA3; integrate workflows incrementally.\newline\textbf{Contingency:} Align interfaces to the agreed contract and add regression tests for affected workflows. & Ngân \\
+\hline
+R6 & Incorrect hosting, authentication, or environment settings may make the application inaccessible after deployment. & Technology & Occasional (50) & Serious (75) & 3,750 & \textbf{Mitigation:} Validate hosting, authentication, and Firebase settings early; trial deployment in W8--W9.\newline\textbf{Contingency:} Restore verified configuration or backup; smoke-test application access and update deployment instructions. & Phúc \\
+\hline
+R7 & Missing tasks, reviews, or weekly reports may weaken evidence of professional team collaboration. & Organizational & Seldom (25) & Serious (75) & 1,875 & \textbf{Mitigation:} Review task-board activity, pull requests, and weekly reports; remind owners before deadlines.\newline\textbf{Contingency:} Record gaps accurately, add available evidence, and correct the process the following week. & Long \\
+\hline
+R8 & Late testing may uncover critical defects when too little time remains for fixes. & Technology & Occasional (50) & Serious (75) & 3,750 & \textbf{Mitigation:} Prepare test data and automation from W8; run unit and workflow tests incrementally.\newline\textbf{Contingency:} Freeze feature work; fix Must-have blockers first and complete retesting before PA5 submission. & Thông \\
+\hline
+\end{longtable}
+\normalsize
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\extrarowheight}{0pt}
+
+Prioritize R4 (5,625), followed by R1 and R2 (4,500 each), R3, R6, and R8 (3,750 each), R5 (2,500), and R7 (1,875). Owners should review indicators and mitigation weekly, update the task board, and execute contingency actions with a scope and schedule reassessment if a risk occurs; a lower RE is not a reason to ignore a risk.
+
+\clearpage
