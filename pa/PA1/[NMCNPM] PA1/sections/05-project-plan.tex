@@ -1,0 +1,608 @@
+\section{Project Plan}
+\subsection{Process and Phase Gates}
+
+The project follows the waterfall model, with test planning prepared in the
+spirit of the V-model: the PA4 test plan is derived from the PA2 requirements
+and the PA3 design. Each phase ends with a phase gate, which is a PA submission.
+A submitted PA becomes a baseline; any later change is recorded, its impact is
+assessed, and it is listed in the next PA. Functional coding is planned to
+start after the PA3 gate.
+
+\begin{table}[H]
+\centering
+\caption{Phase gates and exit criteria.}
+\label{tab:gates}
+\begin{tabularx}{\textwidth}{@{}L{1.2cm}L{3.0cm}L{2.6cm}Y@{}}
+\toprule
+\textbf{Gate} & \textbf{Phase} & \textbf{Planned due} & \textbf{Exit criteria}\\
+\midrule
+PA1 & Initiation and planning & End of Week 3 &
+  Vision, scope, and the approved WBS baseline, estimates, schedule, and risks
+  are consistent. GitHub Projects lists all current work packages, owners, and
+  deadlines. Before PA1 submission, configure and verify main-branch protection
+  and at least one required PR approval, grant and verify instructor/TA repository
+  access, and confirm TA participation in Discord.\\
+PA2 & Requirements & End of Week 5 &
+  Functional and non-functional requirements, business rules and acceptance
+  criteria are clear and prioritised; use cases and prototype are complete;
+  the traceability matrix and requirements review are finished.\\
+PA3 & Design & End of Week 7 &
+  C4 diagrams, UML models, ERD and UI design are consistent with each other
+  and with PA2; at least three ADRs are recorded; the design covers all
+  Must-have requirements; major review findings are closed.\\
+PA4 & Test planning & End of Week 8 &
+  The test plan applies equivalence partitioning, boundary value analysis and
+  decision tables; test cases trace to every Must-have requirement;
+  the test environment and pass/fail criteria are defined.\\
+PA5 & Implementation, testing and deployment & End of Week 10 &
+  All Must-have features work and are deployed; automated tests cover at least
+  two use cases with at least two scenarios per use case; test and coverage
+  reports, CI, code-review evidence, working-software video, and user guide are
+  available.\\
+Final & Presentation and demo & Week 11 &
+  A rehearsal of the demo succeeds; the slides are complete; every member
+  speaks for at least 2 minutes and can explain their own work.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Week numbers are the planning baseline; official submission dates and
+times are those published on Moodle.
+
+\textbf{Change control.} Anyone may propose a change by opening a
+change-request (CR) issue that states the reason, the affected requirements,
+the estimated effort and the impact on the schedule. The business analyst
+assesses the business impact, a developer assesses the technical impact, and
+the team lead consolidates the results. The whole team decides; changes to the
+committed scope are discussed with the TA. After approval, the documents, task
+board and traceability matrix are updated, and the change is listed in the
+next PA.
+
+\subsection{Work Breakdown Structure}
+
+The WBS has three levels. Level~1 consists of the project phases, level~2 of
+deliverables or groups of deliverables, and level~3 of work packages. For
+example: 5~Implementation, testing and deployment $\rightarrow$
+5.1~Back end core and infrastructure $\rightarrow$
+5.1.2~Booking and double-booking prevention. Each work package has exactly one
+owner, an effort estimate in person-hours and a target week, and is tracked as
+one issue on the task board. WBS identifiers are independent of the section
+numbers of this document.
+
+\begin{table}[H]
+\centering
+\caption{WBS levels 1 and 2.}
+\label{tab:wbs-levels}
+\begin{tabularx}{\textwidth}{@{}L{4.6cm}Y@{}}
+\toprule
+\textbf{Level 1 (phase)} & \textbf{Level 2 (deliverable groups)}\\
+\midrule
+1 Planning (PA1) &
+  1.1 Vision; 1.2 Solution and work breakdown; 1.3 Estimation and schedule;
+  1.4 Risk, tools and submission\\
+2 Requirements (PA2) &
+  2.1 Requirements specification; 2.2 Use cases and prototype;
+  2.3 Review and baseline\\
+3 Design (PA3) &
+  3.1 Architecture and data; 3.2 Object-oriented and UI design;
+  3.3 Review and packaging\\
+4 Test planning (PA4) &
+  4.1 Test design; 4.2 Review and environment\\
+5 Implementation, testing and deployment (PA5) &
+  5.1 Back end core and infrastructure; 5.2 Front end;
+  5.3 Admin API and integration; 5.4 System testing and reporting\\
+6 Final presentation &
+  6.1 Presentation\\
+7 Continuous management &
+  7.1 Management throughout the project\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Effort values are expert-judgement estimates in person-hours; further
+estimation details are provided in Section~5.3. The effort of each phase
+already includes its reviews and its business and progress meetings.
+Continuous management (group 7) covers only the consolidation of weekly
+reports and the maintenance of the task board and repository, so no effort is
+counted twice.
+
+\begin{longtable}{@{}L{1.4cm}L{7.4cm}L{1.6cm}rL{1.7cm}@{}}
+\caption{Work packages for PA1 and PA2.}\label{tab:wbs-pa12}\\
+\toprule
+\textbf{WBS} & \textbf{Work package} & \textbf{Owner} & \textbf{Hours} & \textbf{Week}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{WBS} & \textbf{Work package} & \textbf{Owner} & \textbf{Hours} & \textbf{Week}\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\multicolumn{5}{@{}l}{\textbf{1\quad Planning (PA1)}}\\
+\addlinespace[2pt]
+\multicolumn{5}{@{}l}{\textit{1.1 Vision}}\\
+1.1.1 & Vision and scope & Long & 4 & W3\\
+1.1.2 & Stakeholders and product positioning & Long & 2 & W3\\
+\multicolumn{5}{@{}l}{\textit{1.2 Solution and work breakdown}}\\
+1.2.1 & Context diagram, technology stack and environment & Th\^ong & 4 & W3\\
+1.2.2 & Phase gates and WBS & Th\^ong & 3 & W3\\
+\multicolumn{5}{@{}l}{\textit{1.3 Estimation and schedule}}\\
+1.3.1 & Estimation, Gantt schedule, roles and cost & Ng\^an & 5 & W3\\
+\multicolumn{5}{@{}l}{\textit{1.4 Risk, tools and submission}}\\
+1.4.1 & Risk register & Ph\'uc & 2 & W3\\
+1.4.2 & Repository, task board and communication setup & Ph\'uc & 2 & W3\\
+1.4.3 & Assembly, cross-review and submission of PA1 & Long & 2 & W3\\
+\midrule
+\multicolumn{3}{@{}l}{\textbf{Subtotal PA1}} & \textbf{24} & \\
+\midrule
+\multicolumn{5}{@{}l}{\textbf{2\quad Requirements (PA2)}}\\
+\addlinespace[2pt]
+\multicolumn{5}{@{}l}{\textit{2.1 Requirements specification}}\\
+2.1.1 & Functional requirements and business rules & Th\^ong & 7 & W4--5\\
+2.1.2 & Non-functional requirements and acceptance criteria & Long & 4 & W4--5\\
+\multicolumn{5}{@{}l}{\textit{2.2 Use cases and prototype}}\\
+2.2.1 & Use cases and exception flows & Th\^ong & 5 & W4--5\\
+2.2.2 & Prototype of the main flows & Ng\^an & 8 & W4--5\\
+\multicolumn{5}{@{}l}{\textit{2.3 Review and baseline}}\\
+2.3.1 & Traceability matrix and SRS review & Ph\'uc & 6 & W5\\
+2.3.2 & Assembly and baseline of PA2 & Long & 6 & W5\\
+2.3.3 & Prototype review & Ng\^an & 2 & W5\\
+2.3.4 & Data feasibility check & Ph\'uc & 2 & W4\\
+\midrule
+\multicolumn{3}{@{}l}{\textbf{Subtotal PA2}} & \textbf{40} & \\
+\end{longtable}
+
+\begin{longtable}{@{}L{1.4cm}L{7.4cm}L{1.6cm}rL{1.7cm}@{}}
+\caption{Work packages for PA3 and PA4.}\label{tab:wbs-pa34}\\
+\toprule
+\textbf{WBS} & \textbf{Work package} & \textbf{Owner} & \textbf{Hours} & \textbf{Week}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{WBS} & \textbf{Work package} & \textbf{Owner} & \textbf{Hours} & \textbf{Week}\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\multicolumn{5}{@{}l}{\textbf{3\quad Design (PA3)}}\\
+\addlinespace[2pt]
+\multicolumn{5}{@{}l}{\textit{3.1 Architecture and data}}\\
+3.1.1 & C4 architecture and ADRs & Ph\'uc & 6 & W6\\
+3.1.2 & ERD and table specifications & Ph\'uc & 6 & W6--7\\
+\multicolumn{5}{@{}l}{\textit{3.2 Object-oriented and UI design}}\\
+3.2.1 & UML models and class specifications & Th\^ong & 8 & W6--7\\
+3.2.2 & UI design and screen flow & Ng\^an & 8 & W6--7\\
+\multicolumn{5}{@{}l}{\textit{3.3 Review and packaging}}\\
+3.3.1 & Traceability update and design review & Long & 6 & W7\\
+3.3.2 & Assembly of PA3 & Ng\^an & 2 & W7\\
+3.3.3 & Final check and submission of PA3 & Long & 2 & W7\\
+3.3.4 & Testability review & Th\^ong & 2 & W7\\
+\midrule
+\multicolumn{3}{@{}l}{\textbf{Subtotal PA3}} & \textbf{40} & \\
+\midrule
+\multicolumn{5}{@{}l}{\textbf{4\quad Test planning (PA4)}}\\
+\addlinespace[2pt]
+\multicolumn{5}{@{}l}{\textit{4.1 Test design}}\\
+4.1.1 & Test plan, equivalence partitioning, boundary values, decision tables & Th\^ong & 4 & W8\\
+4.1.2 & UI test cases & Ng\^an & 2 & W8\\
+\multicolumn{5}{@{}l}{\textit{4.2 Review and environment}}\\
+4.2.1 & Review and submission of PA4 & Long & 1 & W8\\
+4.2.2 & Test environment and test traceability & Long & 1 & W8\\
+\midrule
+\multicolumn{3}{@{}l}{\textbf{Subtotal PA4}} & \textbf{8} & \\
+\end{longtable}
+
+The 8 hours of PA4 reuse the specifications and acceptance criteria produced
+in PA2; the execution of system tests is counted under group 5.4.
+
+\begin{longtable}{@{}L{1.4cm}L{7.4cm}L{1.6cm}rL{1.7cm}@{}}
+\caption{Work packages for PA5, the final presentation and continuous
+management.}\label{tab:wbs-pa5}\\
+\toprule
+\textbf{WBS} & \textbf{Work package} & \textbf{Owner} & \textbf{Hours} & \textbf{Week}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{WBS} & \textbf{Work package} & \textbf{Owner} & \textbf{Hours} & \textbf{Week}\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\multicolumn{5}{@{}l}{\textbf{5\quad Implementation, testing and deployment (PA5)}}\\
+\addlinespace[2pt]
+\multicolumn{5}{@{}l}{\textit{5.1 Back end core and infrastructure}}\\
+5.1.1 & Database and authentication (F01) & Ph\'uc & 9 & W8\\
+5.1.2 & Booking and double-booking prevention (F03, F04); review the PA3 booking API contract and acceptance criteria in W8, then implement booking and conflict prevention in W9 & Ph\'uc & 10 & W8--9\\
+5.1.3 & Back end unit tests and CI; initial CI setup in W8, with unit tests and coverage checks completed in W10 & Ph\'uc & 5 & W8--10\\
+5.1.4 & Deployment and smoke test & Ph\'uc & 3 & W10\\
+\multicolumn{5}{@{}l}{\textit{5.2 Front end}}\\
+5.2.1 & Room list and calendar (F02) & Ng\^an & 5 & W8\\
+5.2.2 & Submit, view and cancel requests (F03) & Ng\^an & 7 & W8--9\\
+5.2.3 & Administrator screens (F04, F05); prioritize approval UI for W9 integration and complete room/maintenance management in W10 & Ng\^an & 8 & W9--10\\
+5.2.4 & Front end unit tests & Ng\^an & 3 & W9--10\\
+\multicolumn{5}{@{}l}{\textit{5.3 Admin API and integration}}\\
+5.3.1 & Approval and room-management API & Long & 6 & W8--9\\
+5.3.2 & Integrate ready student-booking and admin-approval flows in W9; integrate room/maintenance management after its UI and API are complete in W10 & Long & 5 & W9--10\\
+5.3.3 & Defect fixing after system testing & Long & 4 & W10\\
+5.3.4 & Prepare document structure and a guide draft from available flows in W9; update against the tested deployed build and record the video in W10 & Long & 5 & W9--10\\
+\multicolumn{5}{@{}l}{\textit{5.4 System testing and reporting}}\\
+5.4.1 & Test data and test accounts & Th\^ong & 4 & W8\\
+5.4.2 & Prepare and execute automated tests for at least two use cases, with at least two scenarios per use case, after the corresponding workflows are integrated & Th\^ong & 6 & W8--10\\
+5.4.3 & Test integrated workflows in W9; complete system testing and retesting in W10 & Th\^ong & 9 & W9--10\\
+5.4.4 & Prepare the report structure and collect available results in W9; finalize after W10 test results & Th\^ong & 5 & W9--10\\
+\midrule
+\multicolumn{3}{@{}l}{\textbf{Subtotal PA5}} & \textbf{94} & \\
+\midrule
+\multicolumn{5}{@{}l}{\textbf{6\quad Final presentation}}\\
+\addlinespace[2pt]
+\multicolumn{5}{@{}l}{\textit{6.1 Presentation}}\\
+6.1.1 & Presentation script and overview slides & Long & 3 & W11\\
+6.1.2 & Business demo and Q\&A & Th\^ong & 3 & W11\\
+6.1.3 & UI slides and rehearsal & Ng\^an & 3 & W11\\
+6.1.4 & Demo check and backup & Ph\'uc & 3 & W11\\
+\midrule
+\multicolumn{3}{@{}l}{\textbf{Subtotal Final}} & \textbf{12} & \\
+\midrule
+\multicolumn{5}{@{}l}{\textbf{7\quad Continuous management}}\\
+\addlinespace[2pt]
+\multicolumn{5}{@{}l}{\textit{7.1 Management throughout the project}}\\
+7.1.1 & Coordination and weekly reports & Long & 9 & W2--10\\
+7.1.2 & Board updates for business work & Th\^ong & 3 & W2--10\\
+7.1.3 & Board updates for UI work & Ng\^an & 3 & W2--10\\
+7.1.4 & Repository and technical progress updates & Ph\'uc & 3 & W2--10\\
+\midrule
+\multicolumn{3}{@{}l}{\textbf{Subtotal continuous management}} & \textbf{18} & \\
+\end{longtable}
+
+\textbf{Planned scenarios for WBS 5.4.2.} This is proposed test scope, not a
+report of completed tests: submit booking request (valid request; request
+outside opening hours) and approve booking request (available room/time;
+conflicting booking, including the concurrent-approval case).
+
+\begin{table}[H]
+\centering
+\caption{Effort summary by phase (baseline, before contingency).}
+\label{tab:effort}
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Phase} & \textbf{Effort (person-hours)}\\
+\midrule
+1 Planning (PA1) & 24\\
+2 Requirements (PA2) & 40\\
+3 Design (PA3) & 40\\
+4 Test planning (PA4) & 8\\
+5 Implementation, testing and deployment (PA5) & 94\\
+6 Final presentation & 12\\
+7 Continuous management & 18\\
+\midrule
+\textbf{Total baseline effort} & \textbf{236}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Definition of done.} A work package is complete when:
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+  \item the deliverable or code change described in its issue exists and its
+        acceptance criteria are met;
+  \item the designated reviewer has checked it, the documents or code are
+        updated in the repository through a pull request, and no blocking
+        comment remains;
+  \item the owner has recorded the actual effort, the issue status, the link
+        to the pull request or document, and any remaining issues on the task
+        board.
+\end{itemize}
+
+\textbf{Early technical checkpoints.}
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+  \item F03 and F04 share the same status model but are used by different
+        roles. The sequence diagrams must show the permission check and the
+        conflict check at approval time.
+  \item The ERD and the transaction design must support rooms, bookings, user
+        roles, maintenance periods, the fixed booking rules and the status
+        history.
+  \item Test design must cover time boundaries, capacity limits, bookings
+        outside opening hours, cancellations close to the start time and
+        concurrent approvals.
+  \item Candidate ADRs for PA3 are the choice of PostgreSQL, the use of
+        Firebase for authentication, and the mechanism that prevents two
+        Approved bookings from overlapping. PA1 does not replace these ADRs.
+\end{itemize}
+
+
+\subsection{Estimation}
+
+The team used bottom-up estimation and expert judgement. Package owners
+estimated the work packages, and the team reviewed and approved the work
+packages, owners, and estimates as the PA1 planning baseline. Effort is measured
+in person-hours, not calendar duration; estimates include only the work and
+review/test activities specified in each package, avoiding double-counting.
+The approved estimated-effort baseline is 236 person-hours: PA1 24, PA2 40,
+PA3 40, PA4 8, PA5 94, Final 12, and continuous management 18. These are
+estimates, not actual hours worked. Changes after this baseline follow change
+control.
+
+\textbf{Planned work-package allocation for W8--W10.} The table gives the
+planned weekly distribution in person-hours. Allocations for PA4 and PA5
+packages sum to each package's full WBS effort. Rows marked with an asterisk
+show only the W8--W10 share of the existing continuous-management packages.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.08}
+\setlength{\LTleft}{\fill}
+\setlength{\LTright}{\fill}
+\begin{longtable}{@{}L{1.35cm}L{2.15cm}>{\centering\arraybackslash}p{1.15cm}>{\centering\arraybackslash}p{1.15cm}>{\centering\arraybackslash}p{1.15cm}@{}}
+\caption{Planned W8--W10 work-package allocation (person-hours).}\label{tab:w810-wbs-allocation}\\
+\toprule
+\textbf{WBS ID} & \textbf{Owner} & \textbf{W8} & \textbf{W9} & \textbf{W10} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{WBS ID} & \textbf{Owner} & \textbf{W8} & \textbf{W9} & \textbf{W10} \\
+\midrule
+\endhead
+\midrule
+\endfoot
+\bottomrule
+\endlastfoot
+4.1.1 & Th\^ong & 4 & 0 & 0 \\
+4.1.2 & Ng\^an & 2 & 0 & 0 \\
+4.2.1 & Long & 1 & 0 & 0 \\
+4.2.2 & Long & 1 & 0 & 0 \\
+5.1.1 & Ph\'uc & 9 & 0 & 0 \\
+5.1.2 & Ph\'uc & 0.25 & 9.75 & 0 \\
+5.1.3 & Ph\'uc & 0.5 & 0 & 4.5 \\
+5.1.4 & Ph\'uc & 0 & 0 & 3 \\
+5.2.1 & Ng\^an & 5 & 0 & 0 \\
+5.2.2 & Ng\^an & 2.5 & 4.5 & 0 \\
+5.2.3 & Ng\^an & 0 & 4.5 & 3.5 \\
+5.2.4 & Ng\^an & 0 & 0.5 & 2.5 \\
+5.3.1 & Long & 3 & 3 & 0 \\
+5.3.2 & Long & 0 & 3 & 2 \\
+5.3.3 & Long & 0 & 0 & 4 \\
+5.3.4 & Long & 0 & 2 & 3 \\
+5.4.1 & Th\^ong & 4 & 0 & 0 \\
+5.4.2 & Th\^ong & 1 & 4 & 1 \\
+5.4.3 & Th\^ong & 0 & 3 & 6 \\
+5.4.4 & Th\^ong & 0 & 2.5 & 2.5 \\
+\midrule
+7.1.1* & Long & 1 & 1 & 1 \\
+7.1.2* & Th\^ong & 0.25 & 0.25 & 0.5 \\
+7.1.3* & Ng\^an & 0.25 & 0.25 & 0.5 \\
+7.1.4* & Ph\'uc & 0.25 & 0.25 & 0.5 \\
+\midrule
+\multicolumn{2}{@{}l}{\textbf{W8--W10 total}} & \textbf{35} & \textbf{38.5} & \textbf{34.5} \\
+\end{longtable}
+\endgroup
+
+The asterisked entries are the W8--W10 portions only; the full WBS effort
+remains 9 hours for 7.1.1 and 3 hours for each of 7.1.2--7.1.4. These
+allocations are planning figures, not actual effort or evidence of completed
+work. The W8--W10 workload totals 108 hours: 94 for PA5, 8 for PA4, and 6
+from existing continuous-management effort.
+
+The usual planning allowance is about 7 hours per person per week. The team
+has agreed to make 10 hours per person per week available in W8--W10, for a
+confirmed capacity of $4 \times 10 \times 3 = 120$ person-hours. Long has
+confirmed enough availability for his assigned W3 and W7 work, including
+continuous-management tasks; the usual 7-hour allowance is not a hard limit for
+his workload in those weeks.
+
+\begin{table}[H]
+\centering
+\caption{W8--W10 planned effort and capacity by member (person-hours).}
+\label{tab:w810-capacity}
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+\textbf{Member} & \textbf{PA5} & \textbf{PA4} & \textbf{\shortstack{Management\\W8--W10}} & \textbf{Total} & \textbf{Capacity} \\
+\midrule
+Long & 20 & 2 & 3 & 25 & 30 \\
+Th\^ong & 24 & 4 & 1 & 29 & 30 \\
+Ng\^an & 23 & 2 & 1 & 26 & 30 \\
+Ph\'uc & 27 & 0 & 1 & 28 & 30 \\
+\midrule
+\textbf{Total} & \textbf{94} & \textbf{8} & \textbf{6} & \textbf{108} & \textbf{120} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{W8--W10 planned effort by member and week (person-hours).}
+\label{tab:w810-weekly-load}
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Member} & \textbf{W8} & \textbf{W9} & \textbf{W10} & \textbf{Total} \\
+\midrule
+Long & 6 & 9 & 10 & 25 \\
+Th\^ong & 9.25 & 9.75 & 10 & 29 \\
+Ng\^an & 9.75 & 9.75 & 6.5 & 26 \\
+Ph\'uc & 10 & 10 & 8 & 28 \\
+\midrule
+\textbf{Total} & \textbf{35} & \textbf{38.5} & \textbf{34.5} & \textbf{108} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The 12-hour difference between the agreed 120-hour capacity and the
+108-hour workload is capacity headroom, not additional effort; the project
+baseline remains 236 hours. Headroom is 5 hours for Long, 1 for Th\^ong, 4 for
+Ng\^an, and 2 for Ph\'uc. W9 and W10 both include members at or near 10 hours,
+so the PM should track per-member progress and handoffs rather than rely only on
+group capacity.
+
+\subsection{Schedule}
+
+The schedule is a week-level planning baseline; official submission dates
+and times are those published on Moodle. Tasks may overlap where dependencies
+allow. The W8--W10 package allocations in Table~\ref{tab:w810-wbs-allocation}
+provide the detailed weekly plan; the Gantt below summarizes those spans.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{2.5pt}
+\renewcommand{\arraystretch}{1.08}
+\setlength{\LTleft}{\fill}
+\setlength{\LTright}{\fill}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.6cm}|*{10}{>{\centering\arraybackslash}p{0.55cm}|}@{}}
+\caption{Project schedule by course week.}\label{tab:gantt}\\
+\hline
+\textbf{Task / milestone} & \textbf{2} & \textbf{3} & \textbf{4} &
+\textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} &
+\textbf{10} & \textbf{11} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Task / milestone} & \textbf{2} & \textbf{3} & \textbf{4} &
+\textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} &
+\textbf{10} & \textbf{11} \\
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+Scope and PA1 planning & $\blacksquare$ & $\blacksquare$ & & & & & & & & \\
+PA1 submission & & $\blacklozenge$ & & & & & & & & \\
+Requirements and acceptance criteria & & & $\blacksquare$ & $\blacksquare$ & & & & & & \\
+PA2 submission & & & & $\blacklozenge$ & & & & & & \\
+Architecture, database, and UI design & & & & & $\blacksquare$ & $\blacksquare$ & & & & \\
+PA3 submission & & & & & & $\blacklozenge$ & & & & \\
+PA4 test plan and environment (4.1--4.2) & & & & & & & $\blacksquare$ & & & \\
+PA4 submission & & & & & & & $\blacklozenge$ & & & \\
+Database and authentication (5.1.1) & & & & & & & $\blacksquare$ & & & \\
+Booking backend preparation and implementation (5.1.2) & & & & & & & $\blacksquare$ & $\blacksquare$ & & \\
+Room and booking-request UI (5.2.1--2) & & & & & & & $\blacksquare$ & $\blacksquare$ & & \\
+Admin API (5.3.1) & & & & & & & $\blacksquare$ & $\blacksquare$ & & \\
+Initial CI configuration (5.1.3) & & & & & & & $\blacksquare$ & & & \\
+Admin screens (5.2.3) & & & & & & & & $\blacksquare$ & $\blacksquare$ & \\
+Front end--back end integration (5.3.2) & & & & & & & & $\blacksquare$ & $\blacksquare$ & \\
+Automation (5.4.2) & & & & & & & $\blacksquare$ & $\blacksquare$ & $\blacksquare$ & \\
+Front end unit tests (5.2.4) & & & & & & & & $\blacksquare$ & $\blacksquare$ & \\
+Back end unit tests and coverage completion (5.1.3) & & & & & & & & & $\blacksquare$ & \\
+System testing and retesting of integrated workflows (5.4.3) & & & & & & & & $\blacksquare$ & $\blacksquare$ & \\
+Test report and retrospective (5.4.4) & & & & & & & & $\blacksquare$ & $\blacksquare$ & \\
+Defect fixing after system testing (5.3.3) & & & & & & & & & $\blacksquare$ & \\
+Deployment and smoke test (5.1.4) & & & & & & & & & $\blacksquare$ & \\
+W9 documentation draft; W10 final materials/video (5.3.4) & & & & & & & & $\blacksquare$ & $\blacksquare$ & \\
+Continuous management (7.1.1--4) & $\blacksquare$ & $\blacksquare$ & $\blacksquare$ & $\blacksquare$ & $\blacksquare$ & $\blacksquare$ & $\blacksquare$ & $\blacksquare$ & $\blacksquare$ & \\
+PA5 submission and final review & & & & & & & & & $\blacklozenge$ & \\
+Final presentation / demonstration & & & & & & & & & & $\blacklozenge$ \\
+\end{longtable}
+\endgroup
+
+\noindent\textbf{Legend:} Column numbers indicate course weeks; $\blacksquare$ = planned work; $\blacklozenge$ = milestone. The WBS allocation table gives exact weekly effort where a workstream spans multiple weeks.
+
+\medskip
+\noindent\textbf{Dependencies and sequencing:}
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+  \item Finalize the database schema and API contracts from PA3 before implementation.
+  \item Complete database and authentication work before integrating workflows that require sign-in.
+  \item Integrate incrementally in W9--W10: connect student-booking and admin-approval flows when ready in W9, then connect room and maintenance management after the corresponding UI and API are complete in W10.
+  \item Prepare test cases and automation in advance, but run workflow tests only on flows that have been integrated. In W10, complete the room/maintenance UI and API, integrate them, run the corresponding system tests, fix defects and retest, then verify the release.
+  \item Finalize the test report and PA5 video using the deployed build and results from completed checks.
+\end{itemize}
+\textbf{Expected critical path.} Under the current week-level planning
+assumptions, the expected sequence is requirements baseline (PA2)
+$\rightarrow$ architecture, database design, and API contracts (PA3)
+$\rightarrow$ database/authentication and core booking backend (5.1.1--5.1.2)
+$\rightarrow$ front-end--back-end integration (5.3.2)
+$\rightarrow$ system testing, defect fixing, and retesting (5.4.3, 5.3.3)
+$\rightarrow$ deployment and smoke testing (5.1.4)
+$\rightarrow$ final PA5 report, release documentation, and video (5.4.4, 5.3.4)
+$\rightarrow$ final demonstration. Delayed required inputs can postpone
+integration, testing, and handover. Integration is planned in parts across W9
+and W10. Room/maintenance UI and API work must be complete and integrated before
+full system testing of those functions; in W10, sequence their completion,
+integration, testing, defect fixing/retesting, and release verification by these
+prerequisites. The final report and video use the deployed build after checks
+are complete. Work may overlap partially when its prerequisites are available.
+This is an expected path, not a CPM or float calculation; confirm it when
+dependencies and durations are detailed.
+
+\subsection{Roles and Responsibilities}
+
+The responsibilities below follow the team's agreed role allocation. All members
+share responsibility for reviewing the report, testing the integrated application,
+communicating progress, and recording their own contributions.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.22}
+\begin{center}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{3.0cm}
+>{\centering\arraybackslash}p{1.65cm}
+>{\centering\arraybackslash}p{1.65cm}
+>{\raggedright\arraybackslash}p{6.0cm}@{}}
+\hline
+\textbf{Role} & \textbf{Main} & \textbf{Backup} & \textbf{Responsibilities} \\
+\hline
+Team Lead / Project Manager & Long & Thong &
+Maintain the schedule and task board, assign and follow up tasks, organise weekly
+status meetings, track risks, and coordinate submissions and communication. \\
+\hline
+Business Analyst / Requirements & Thong & Long &
+Gather and document requirements, booking rules, use cases, and acceptance criteria;
+check consistency across PA documents and coordinate requirement reviews. \\
+\hline
+Backend Developer / Database / Architecture & Phuc & Ngan &
+Lead C4 and architecture work, ADRs, and ERD; design and maintain the database and
+backend; implement authentication, role checks, booking validation, and API endpoints. \\
+\hline
+Frontend Developer / UI Designer & Ngan & Phuc &
+Design and implement Student and Administrator screens; display room availability and
+booking statuses; connect the interface to backend APIs and check usability. \\
+\hline
+Testing and Quality Coordination & Thong & Long &
+Lead test planning, test data, workflow and integration testing, defect tracking,
+retesting, and test evidence/reporting; all members support testing as assigned. \\
+\hline
+\end{tabular}
+\end{center}
+\endgroup
+
+\subsection{Human Resources and Cost Estimate}
+
+The project is planned for a four-member student team. The baseline workload is
+236 person-hours according to the WBS. For a comparable cost estimate, the team uses a notional rate of
+VND 100,000 per person-hour. This rate is a planning assumption to represent the
+value of effort, not an actual payment to team members. Hosting and contingency
+figures are provisional and should be revised once the deployment approach is known.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.22}
+\begin{center}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{8.5cm}
+>{\centering\arraybackslash}p{3.4cm}@{}}
+\hline
+\textbf{Cost item} & \textbf{Estimated cost (VND)} \\
+\hline
+Human effort: 236 person-hours $\times$ VND 100,000/hour & 23,600,000 \\
+\hline
+Development tools and collaboration software (free/student tiers) & 0 \\
+\hline
+Hosting / deployment allowance for the course demonstration & 500,000 \\
+\hline
+Other expenses / contingency allowance & 500,000 \\
+\hline
+\textbf{Total estimated project cost} & \textbf{24,600,000} \\
+\hline
+\end{tabular}
+\end{center}
+\endgroup
+
+The 500,000 VND contingency is a monetary reserve, separate from capacity headroom
+and not an additional labor estimate. The estimate assumes that the team uses available free or student plans for source
+control, documentation, and development. It excludes the purchase of personal
+computers, existing internet access, and actual salary payments. The team will
+review the estimate if the feature scope, hosting option, or course requirements change.

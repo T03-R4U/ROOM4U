@@ -1,0 +1,74 @@
+\section{Tools \& Collaboration Setup}
+
+The tools below distinguish active team practices from access and controls that remain to be completed before PA1 submission.
+
+\subsection{Tools and Working Rules}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{@{}>{\raggedright\arraybackslash\setlength{\parindent}{0pt}\setlength{\parskip}{0pt}\hyphenpenalty=10000\relax}p{0.18\textwidth}>{\raggedright\arraybackslash\setlength{\parindent}{0pt}\setlength{\parskip}{0pt}\hyphenpenalty=10000\relax}p{0.77\textwidth}@{}}
+\toprule
+Tool & Purpose / Working Rules \\
+\midrule
+\endfirsthead
+\toprule
+Tool & Purpose / Working Rules \\
+\midrule
+\endhead
+\midrule
+\endfoot
+\bottomrule
+\endlastfoot
+Moodle & Check course announcements and submit PA deliverables as instructed; Moodle is the required course platform. \\
+Discord & The team uses \href{https://discord.gg/jUpHKWqGJ}{Room4U Discord}; the TA has not joined. Long will send an invitation and confirm TA participation before PA1 submission. Record decisions in GitHub issues or meeting records. \\
+GitHub repository & The agreed workflow is issue $\rightarrow$ branch $\rightarrow$ PR $\rightarrow$ at least one peer approval $\rightarrow$ merge. No PR has been opened, so there is no PR-review evidence. Main protection and required approval are unverified, and instructors/TA do not yet have repo access. \\
+GitHub Projects & The active board lists all current WBS work packages with owners and deadlines. Update status, effort, dependencies, and evidence as work proceeds through the \texttt{Backlog} $\rightarrow$ \texttt{Ready} $\rightarrow$ \texttt{In Progress} $\rightarrow$ \texttt{In Review} $\rightarrow$ \texttt{Done} workflow. \\
+Prism & Collaborate on one shared report and compile review PDFs; arrange project access and assign an exporter, then export source manually at PA review milestones. \\
+CI & Initial CI setup is planned for W8; add lint, unit-test, and coverage checks as implementation proceeds and course requirements are clarified. No active CI or passing checks are claimed. \\
+Weekly status report & The team lead/PM compiles the weekly status report and commits it to \texttt{docs/management/}\allowbreak\texttt{weekly/} by 23:59 every Sunday (\texttt{Asia/Ho\_Chi\_Minh}), from week 2 through week 10. Hold the weekly status meeting for 15 minutes; agree the TA meeting schedule separately. \\
+\end{longtable}
+\normalsize
+\setlength{\tabcolsep}{5pt}
+
+\subsection{Repository Structure}
+All paths below are relative to the repository root.
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{@{}>{\raggedright\arraybackslash\setlength{\parindent}{0pt}\setlength{\parskip}{0pt}\hyphenpenalty=10000\relax}p{0.31\textwidth}>{\raggedright\arraybackslash\setlength{\parindent}{0pt}\setlength{\parskip}{0pt}\hyphenpenalty=10000\relax}p{0.64\textwidth}@{}}
+\toprule
+Folder & Content \\
+\midrule
+\endfirsthead
+\toprule
+Folder & Content \\
+\midrule
+\endhead
+\midrule
+\endfoot
+\bottomrule
+\endlastfoot
+\texttt{src/} & Room4U application source; keep the editable application code in this single working location. \\
+\texttt{docs/management/} & Project plan, WBS, risk register, decisions, and meeting records. \\
+\texttt{docs/management/}\allowbreak\texttt{weekly/} & Weekly status reports, one for each reporting week from week 2 through week 10. \\
+\texttt{docs/requirements/} & Vision, SRS, use cases, and mockups. \\
+\texttt{docs/design/} & Architecture (C4), ADRs, UML models, and UI design. \\
+\texttt{docs/test/} & Test plan, test cases, test results, and test reports. \\
+\texttt{docs/ai-usage/} & AI usage logs. \\
+\texttt{pa/PA0/}--\texttt{pa/PA5/} & One release folder per PA, containing that submission's exported source and final PDF as a matched pair. \\
+\end{longtable}
+\normalsize
+\setlength{\tabcolsep}{5pt}
+
+The shared Prism project is the report's only editable master. Working management, requirements, design, and test documents belong under \texttt{docs/}; each PA folder holds only its reviewed source export and accepted PDF, not a second working copy.
+
+\subsection{Task Workflow}
+\begin{enumerate}
+  \item Create an issue with acceptance criteria and evidence links; assign an owner, deadline, effort, and dependencies.
+  \item Move the task to \texttt{Ready}, create a separate branch from \texttt{main}, and implement the change.
+  \item Commit using Conventional Commits (for example, \texttt{feat:}, \texttt{fix:}, \texttt{docs:}, or \texttt{test:}).
+  \item Open a PR linked to the issue and obtain at least one peer approval before merge. For documentation, review the content, compile LaTeX, and inspect the PDF; for application code, run configured lint, unit tests, and any agreed coverage checks.
+  \item Merge only after the required peer approval and applicable checks pass, then mark the issue \texttt{Done} and attach the completed work or other evidence.
+\end{enumerate}
+
+Never commit \texttt{.env} files, passwords, API keys, or service-account credentials.
+
+\clearpage

@@ -1,0 +1,159 @@
+\section{Vision}
+
+\subsection{Preliminary Problem Statement}
+Room4U addresses the need to reserve group-study rooms in the university library. For this project, the team assumes that the library has eight rooms, each with separate capacity, equipment, and available time slots. Students often need rooms to meet with their groups, practice presentations, or work on assignments together. Before submitting a request, they need to know which rooms are suitable and which time slots are available.
+
+In the illustrative business scenario, receiving requests through in-person conversations or disconnected forms leaves room information and request statuses scattered across different places. Students may submit requests for time slots that have already been booked, while librarians must check schedules before responding. This scenario is an assumption for modeling the problem; it is not a conclusion based on a survey of HCMUS's actual processes.
+
+The product provides a single place for students to view rooms, select a time, submit requests, and track their outcomes. A valid request initially has Pending status. Librarians review the pending requests and decide whether to approve or reject them. A request becomes a confirmed booking only after it has been successfully approved. Students may cancel their bookings according to the published rules.
+
+Librarians need to manage room information, temporarily take rooms out of service for maintenance, and block maintenance time slots. The system supports checks for room capacity, booking duration, opening hours, advance-booking limits, and schedule conflicts. These checks must be enforced by the backend; the user interface only assists with data entry and displays feedback. Concurrent approval actions must not create two approved bookings that overlap for the same room.
+
+The project will deliver a standalone simulation website using test data. Student and Library Administrator accounts will be provided for testing and demonstration. If university email addresses are used, they are test-account data and do not imply integration with the university's single sign-on system. The system will not connect to the student database, a real room-booking system, door locks, or library attendance devices.
+
+Users will access the system through HTML5- and JavaScript-compatible browsers over HTTPS. The planned backend uses Node.js with Express, business data is stored in PostgreSQL, and Firebase Authentication supports user authentication. The system is assumed to run on a Linux server managed by the team. These choices reflect the team's assumed experience with JavaScript and relational databases and must be validated by setting up the environment before implementation begins.
+
+The four-member team will follow the Waterfall model and combine it with test planning based on the V-model. PA1 establishes the preliminary plan; detailed requirements and acceptance criteria will be finalized in PA2, design in PA3, and the test plan in PA4. Must-have features are the implementation commitments for PA5. Changes made after each baseline must be recorded, their impacts assessed, and the relevant updates included in the next PA.
+
+Preliminary acceptance goals are that a student can submit a valid request; a librarian can approve or reject it and the student can see the correct status; and no two Approved bookings can overlap for the same room and time. The release must be deployed and accessible, and include a test report, demonstration video, run instructions, and evidence of team collaboration. Performance targets, test datasets, and exception rules will be clarified in PA2.
+
+\subsection{Product Position Statement}
+\begin{tabularx}{\textwidth}{@{}L{0.28\textwidth}Y@{}}
+\toprule
+Element & Content \\
+\midrule
+For & Students who need group-study rooms and librarians who manage them \\
+Who & Need a single place to view schedules, submit requests, and track their status \\
+The Room4U website & Is a group-study room booking and management website with an approval workflow \\
+That & Centralizes room schedules, requests, and statuses while helping prevent double bookings \\
+Unlike & Separate request forms and independently maintained room schedules \\
+Our product & Combines request submission, rule validation, and librarian approval in one workflow \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Stakeholders and Users}
+\begin{tabularx}{\textwidth}{@{}L{0.06\textwidth}L{0.20\textwidth}L{0.34\textwidth}Y@{}}
+\toprule
+\# & Stakeholder / user & Description & Main interests \\
+\midrule
+1 & Students & Direct users & Find suitable rooms, submit or cancel requests, and view request statuses \\
+2 & Librarians & Direct users & Review requests and manage rooms and availability \\
+3 & Assumed library representative & Business sponsor in the illustrative scenario & Clear schedules and room use in accordance with library rules \\
+4 & Instructors and teaching assistants & Evaluate the product and course process; not library customers or booking approvers & Assess the project deliverables and process \\
+5 & R4U team & Builds, tests, and operates the demo & Keep the project scope achievable within the available time \\
+\bottomrule
+\end{tabularx}
+
+\paragraph{Planning Assumptions}
+\begin{itemize}
+  \item The project assumes one library, eight rooms, and up to 500 test accounts. The main demonstration will use two student accounts and one administrator account.
+  \item One representative of a student group submits each request. The system will not manage group membership or synchronize personal calendars.
+  \item Accounts will be pre-created. Self-service registration, password recovery, and institution-wide identity management are not Must-have features.
+  \item One administrator is assumed to be on duty, and booking decisions are made manually. Room4U does not guarantee that the library will respond within a fixed time.
+  \item The team's target for the course is a grade of 9--10; this is a goal, not a guaranteed result.
+\end{itemize}
+
+\subsection{Scope and Key Features}
+
+\textbf{Scope adjustment from PA0.} To meet the course guidance and keep the
+workload proportionate to the available project time, the team organized the
+related functionality into five core features. The administrator interface for
+configuring booking rules is out of scope; the system still enforces the fixed
+booking rules. The team approved this adjustment. Long is responsible for
+notifying and discussing it with the TA through change control; this does not
+imply TA approval.
+
+\subsubsection{Core Features}
+\begin{tabularx}{\textwidth}{@{}L{0.08\textwidth}L{0.20\textwidth}Y L{0.17\textwidth}@{}}
+\toprule
+ID & Core feature & User and scope & Priority (M/S/C/W) \\
+\midrule
+F01 & Login and role-based access & Students and admins use pre-created accounts to log in and out. The API enforces roles and data ownership. & Must \\
+F02 & Room search and schedule viewing & Students view room listings, photos, capacity, and equipment; filter by group size and date; and see approved or blocked time slots. & Must \\
+F03 & Personal request management & Students submit requests with a room, time, and group size; view Pending, Approved, Rejected, or Cancelled status and request history; and cancel their own requests before they start. & Must \\
+F04 & Booking request processing & Admins review the queue, approve or reject requests, and cancel approved bookings with a reason. Approval rechecks availability and prevents conflicting bookings. & Must \\
+F05 & Room and availability management & Admins add or edit room details, stop accepting new requests for a room, and block maintenance periods. There is no interface for configuring all booking rules. & Must \\
+\bottomrule
+\end{tabularx}
+
+\subsubsection{Prototype Business Rules and Constraints}
+\begin{itemize}
+  \item The prototype covers one library with eight rooms, pre-provisioned test accounts, and one student representative submitting each group request.
+  \item The agreed fixed rules are opening hours of 08:00--20:00; booking durations of 30--120 minutes; booking up to seven days in advance; and no booking that exceeds room capacity. Time is interpreted in \texttt{Asia/Ho\_Chi\_Minh}. A 30-minute booking-start increment is an assumption for the PA1 planning baseline and will be confirmed and detailed in PA2.
+  \item Pending requests do not reserve a room. The backend rejects approval if an Approved booking or maintenance block overlaps the requested time. Adjacent intervals, such as 09:00--10:00 and 10:00--11:00, are allowed.
+  \item Admins cannot directly change the time or room of an Approved booking. To make a change, they must cancel it with a reason and submit a new request; booking history is retained.
+  \item Before blocking time for maintenance, admins must resolve any affected Approved bookings. Students can see the cancellation reason for their own requests.
+  \item Conflict prevention, capacity checks, and status history support F02--F05; they are not additional core features.
+\end{itemize}
+
+\textbf{Out of scope:}
+\begin{itemize}
+  \item Self-service registration and integration with the university's actual login system.
+  \item Payments, AI features, and native mobile applications.
+  \item Email and reminders, or a separate notification center.
+  \item Check-in, analytics, feedback, and no-show penalties.
+  \item An interface for configuring booking rules.
+\end{itemize}
+
+\subsection{Real-World Scenarios}
+The following scenarios illustrate possible use of Room4U. They are not events surveyed or observed at HCMUS and do not describe confirmed university processes.
+
+\subsubsection{Student Books a Room to Practice a Presentation}
+\textbf{Context:} Mai represents a group of four students that needs a room with a display from 14:00 to 15:30 the following day. The group wants confirmation that its request has been approved before going to the library.
+
+\begin{enumerate}
+  \item Mai logs in with a test Student account and filters rooms by a capacity of at least four for the date needed.
+  \item Mai selects R02, which has six seats and a display, checks its schedule, and submits a request for 14:00--15:30. The system validates the request, creates it with Pending status, and clearly indicates that it is not yet confirmed.
+  \item A librarian logs in with an Admin account, reviews the request details, and chooses to approve it. The system rechecks the room, schedule, and conflicts before changing the status to Approved.
+  \item Mai opens her personal requests, sees the Approved status and room details, and the group uses the room during the confirmed period.
+\end{enumerate}
+
+\textbf{Outcome:} The student receives clear confirmation, and the room schedule reflects the approved booking. If another request for the same time was approved first, Mai's approval must fail safely. The admin can reject the request with a reason, and Mai can choose another room.
+
+\textbf{Related features:} F01--F04. \textbf{Demonstration criteria:} Submitting a request does not reserve the schedule; approval reserves it; and the student sees the correct status.
+
+\subsubsection{Librarian Handles a Room Requiring Maintenance}
+\textbf{Context:} The display in R03 is broken. A librarian needs to take the room out of service from 10:00 to 12:00, but an Approved booking already exists from 10:00 to 11:00.
+
+\begin{enumerate}
+  \item The librarian logs in with an Admin account and checks the affected bookings. The system does not allow a maintenance block that overlaps an Approved booking.
+  \item The librarian cancels the affected booking and records the maintenance reason. The system retains the booking history and changes its status to Cancelled.
+  \item The librarian creates a maintenance block for 10:00--12:00. Students see that the room is unavailable during this period, and the system prevents overlapping requests from being created or approved.
+  \item The affected student opens their personal requests, sees the status and cancellation reason, and can search for R04 and submit a new request if it is suitable.
+\end{enumerate}
+
+\textbf{Outcome:} The broken room is not assigned to another group, and the cancellation is reasoned and traceable. The application does not automatically move the booking to another room or send email.
+
+\textbf{Related features:} F01--F05.
+
+\subsection{Similar Products and Competitors}
+The team compared three real products using their official documentation, accessed October 16, 2026. The Room4U assessments below express the team's positioning; they are not benchmark results or findings from comparative testing.
+
+\begin{tabularx}{\textwidth}{@{}L{0.21\textwidth}L{0.38\textwidth}Y@{}}
+\toprule
+Solution & Capabilities confirmed by documentation & Room4U positioning in comparison \\
+\midrule
+Google Calendar in Google Workspace [1] & A resource manager can accept or decline events scheduled for a room or other resource after an administrator configures resource management. & Room4U focuses on a dedicated study-group request interface and business statuses. It does not integrate with personal calendars or Google Workspace. \\
+Springshare LibCal [2] & Provides library room reservations, booking mediation, and check-in, as well as event calendars and other library services. & Room4U is scoped to five core features for one simulated library; it does not aim to provide a broad library-services suite like LibCal. \\
+MRBS Meeting Room Booking System [3] & A free, GPL web application for booking rooms or other resources. Its documented features include conflict prevention, multiple authorization levels, and day, week, and month calendar views. & Room4U is positioned around a Vietnamese-language workflow and the rules selected for this course project. It does not aim to match MRBS's feature breadth. \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Differentiation}
+Room4U's proposed differentiation lies in its scope and organization of the user experience: one library, two roles, five core features, and a clear group-study request workflow. The planned Vietnamese interface will use concise labels corresponding to Pending, Approved, Rejected, and Cancelled, and show the applicable rules and processing reasons alongside each request. This is a design choice to validate with students, not evidence that Room4U is easier to use than competing products.
+
+Compared with a general-purpose calendar, Room4U presents room use as a request for librarian review. Compared with broader room-booking platforms, the team deliberately limits the product to a defined set of rules and the operations needed for the modeled group-study library. The goal is to make the product feasible for a four-member team to specify, build, and test end to end.
+
+Manual approval, conflict prevention, and online booking already exist in current solutions; Room4U does not claim them as inventions or exclusive features [1--3]. Its proposed differentiation is the combination of scope, context, and interface design for the target users. The practical value of this combination must be evaluated after a prototype is available.
+
+\noindent\textbf{References}\par
+Official product documentation accessed October 16, 2026.
+
+\begin{enumerate}[label={[\arabic*]}]
+  \item Google Workspace Admin Help, ``Approve or deny Calendar room \& resource bookings,'' \url{https://knowledge.workspace.google.com/admin/calendar/approve-or-deny-calendar-room-and-resource-bookings}.
+  \item Springshare, ``LibCal for Academic Libraries,'' \url{https://www.springshare.com/academic-libraries/libcal}.
+  \item MRBS, ``Introduction,'' \url{https://mrbs.sourceforge.io/}.
+  \item Instructor-provided project idea guidance, \url{https://pub.nndkhoa9.win/intro2se/project-idea.png}.
+\end{enumerate}
+
+\clearpage
