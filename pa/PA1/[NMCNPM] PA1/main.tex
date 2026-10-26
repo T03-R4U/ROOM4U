@@ -1,0 +1,78 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{array,booktabs,longtable,tabularx}
+\usepackage{ragged2e}
+\usepackage{etoolbox}
+
+\makeatletter
+\patchcmd{\LT@output}{\vss}{\vskip 0pt plus \maxdimen minus \normalbaselineskip}{}{\PackageError{Room4U}{Could not patch longtable output glue}{}}
+\patchcmd{\LT@output}{\vss}{\vskip 0pt plus \maxdimen minus \normalbaselineskip}{}{\PackageError{Room4U}{Could not patch longtable output glue}{}}
+\makeatother
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usepackage{xurl}
+\usepackage{hyperref}
+\usepackage{pdflscape}
+
+\definecolor{c4person}{HTML}{08427B}
+\definecolor{c4system}{HTML}{1168BD}
+\definecolor{c4ext}{HTML}{6B6B6B}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.65\baselineskip}
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.2}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\instruction}[1]{\begin{quote}\small\itshape #1\end{quote}}
+\newcommand{\blankrow}{\rule{0pt}{2.5ex}}
+\newcommand{\angleplaceholder}[1]{\textit{\textless{}#1\textgreater{}}}
+
+\setlist[itemize]{leftmargin=*,itemsep=0.2em,topsep=0.3em}
+\renewcommand{\contentsname}{Table of Contents}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!45!black,
+  urlcolor=blue!55!black,
+  pdftitle={Project Proposal and Plan},
+  pdfauthor={Software Engineering Team},
+  hypertexnames=false
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Introduction to Software Engineering}
+\fancyhead[R]{\small Project Proposal \& Plan}
+\fancyfoot[L]{\small HCMUS \textbar{} SE Dept.}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+
+\input{frontmatter/titlepage}
+
+\pagenumbering{roman}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\input{sections/01-objectives}
+\input{sections/02-member-contribution}
+\input{sections/03-vision}
+\input{sections/04-proposed-solution}
+\input{sections/05-project-plan}
+\input{sections/06-risk-management}
+\input{sections/07-tools-collaboration}
+\input{sections/08-ai-usage-log}
+
+\end{document}
