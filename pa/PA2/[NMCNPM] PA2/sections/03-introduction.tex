@@ -1,13 +1,89 @@
 \section{Introduction}
-\subsection{Purpose and Scope}
-[Purpose of this document, the product scope (in / out of scope), and the intended readers.]
+\subsection{Purpose}
+The purpose of this document is to define the complete software requirements for Room4U, a web-based group-study room booking and management system. This Software Requirements Specification (SRS) serves as the foundational reference for the development team for PA3 design, for testers to derive PA4 test cases, and for instructors and Teaching Assistants (TAs) to review project scope and consistency.
+
+\subsection{Scope}
+Room4U is an independent simulation website for a university library containing an initial set of eight rooms. It supports pre-provisioned test accounts for students and library administrators. The system centralizes room schedules, request submissions, and administrative approvals while preventing double bookings.
+
+The Must-have scope comprises five core feature groups:
+\begin{srstable}{p{0.16\textwidth}|L}
+\textbf{Feature} & \textbf{Must-have scope} \\ \hline
+F01 & Authentication and access control: secure login and logout for students and administrators using pre-created accounts, with backend-enforced roles and data ownership. \\ \hline
+F02 & Room search and schedule viewing: view room listings, photos, capacities, and equipment; filter by group size and date; and inspect approved or blocked time slots. \\ \hline
+F03 & Personal request management: submit booking requests, view Pending, Approved, Rejected, and Cancelled statuses, review history, and cancel active requests before they start. \\ \hline
+F04 & Booking request processing: allow administrators to review the request queue, approve or reject requests, and cancel approved bookings with a reason while rechecking availability to prevent conflicts. \\ \hline
+F05 & Room and availability management: allow administrators to add or edit room details, suspend room request intake, and block maintenance periods. \\ \hline
+\end{srstable}
+
+Out of scope are real university SSO or student-database integration, self-service registration and password recovery, group-member management, personal-calendar integration, online payments, AI features, native mobile apps, automated email notifications and reminders, a separate notification center, check-in, analytics and usage statistics, feedback reporting, no-show penalties, automatic room reassignment, and an administrator interface for dynamically configuring booking rules.
+
+Accounts and room data are simulated. The initial demonstration environment uses eight rooms, two Student accounts, and one Administrator account, with support for up to 500 pre-created accounts. Since room creation is supported in F05, eight rooms represent the initial test dataset rather than a permanent maximum.
+
+\subsection{Product Perspective}
+Room4U is an independent web application with a Node.js and Express backend, a PostgreSQL relational database, and Firebase Authentication.
+
+\textbf{System interfaces:} The system interfaces externally with Firebase Authentication to verify user identity tokens. Business logic, role verification, and data storage are managed internally by the Room4U backend and PostgreSQL database.
+
+\textbf{User interfaces:} Users access the system through HTML5- and JavaScript-compatible web browsers over HTTPS. The user interface is optimized for desktop browsers, including Chrome and Edge, as well as standard mobile viewports.
+
+\textbf{Communications interfaces:} Client-server communication takes place over the internet using HTTPS.
+
+\textbf{Memory constraints:} The application runs in standard user web browsers and on a Linux demonstration server configured with 2 vCPUs, 4 GB of RAM, and 20 GB of storage. Data structures and backend queries are designed to prevent memory leaks and support rapid conflict evaluation.
+
+\textbf{Operations:} Users and administrators operate the system through web browser interfaces. Routine procedures include manual request processing by librarians, database backups before live demonstrations, and management of credentials through secure environment variables.
+
+\textbf{Site adaptation requirements:} No physical site adaptations are required. The application runs in a standard cloud or Linux VPS environment with environment-specific configuration.
+
+\subsection{User Characteristics}
+\begin{itemize}[leftmargin=1.5em,itemsep=2pt,topsep=2pt]
+  \item \textbf{Students:} Direct users who need group-study spaces. They search for suitable rooms, submit and cancel booking requests, and track request statuses.
+  \item \textbf{Librarians (Library Administrators):} Direct users responsible for managing room availability, blocking maintenance intervals, and reviewing and processing student booking requests.
+  \item \textbf{Instructors and Teaching Assistants:} Academic evaluators who review project deliverables and evaluate course engineering processes.
+\end{itemize}
 
 \subsection{Glossary}
-\begin{srstable}{p{0.28\textwidth}|L}
+\begin{srstable}{p{0.24\textwidth}|L}
 \textbf{Term} & \textbf{Definition} \\ \hline
-\blankcell & \blankcell \\ \hline
-\blankcell & \blankcell \\ \hline
-\blankcell & \blankcell \\ \hline
+Request & A student's proposed room, time, and group-size record, initially with Pending status. \\ \hline
+Booking & A request whose current status is Approved and therefore reserves a specific time interval. \\ \hline
+Pending & A status indicating the request is awaiting an administrator decision; it holds no room capacity. \\ \hline
+Rejected / Cancelled & Terminal request statuses that reserve no room time interval. \\ \hline
+Maintenance block & An active room-unavailability interval created by an admin. \\ \hline
+Suspended room & A room that does not accept new submissions or approvals; existing retained bookings remain visible. \\ \hline
+Owner & The individual Student account that submitted a request, not the entire study group. \\ \hline
+Atomic decision & An action whose checks and committed outcome remain consistent despite concurrent actions. \\ \hline
+Baseline & A document or feature version reviewed and approved by the team for subsequent design and testing. \\ \hline
+P1 and D references & P1 refers to the submitted PA1 document (\texttt{T03\_PA1.pdf}); D01--D08 refer to the proposed PA2 baseline decisions. \\ \hline
 \end{srstable}
+
+\subsection{Sources and Requirement Conventions}
+\textbf{Sources:} P1 is \texttt{T03\_PA1.pdf}, the submitted Room4U Project Proposal and Plan. T2 is the supplied PA2 Software Requirements Specification template. G is the supplied Project Guidelines and Rubric. These course documents form the official sources for scope and deliverables; no external field interviews or real-library policy validation are claimed.
+
+\textbf{Requirement identifiers:} FR means Functional Requirement; NFR means Non-Functional Requirement; BR means Business Rule; UC means Use Case; S means Screen or Interface; and AC means Acceptance Criteria Scenario.
+
+All listed FRs and operational UCs are classified as Must-have. The complete five-feature baseline is committed at the feature level. References to PA3 design and PA4 testing matrices represent planned mappings rather than completed artifacts.
+
+\subsection{Baseline Decisions for PA2}
+The following proposed decisions make the specification executable and testable as refinements to the initial PA1 scope. The team must review and confirm or revise them before baselining; use change control if a decision changes the committed scope.
+
+\begingroup
+\setstretch{1.0}
+\begin{srstable}{p{0.07\textwidth}|p{0.13\textwidth}|L|p{0.22\textwidth}}
+\textbf{ID} & \textbf{Topic} & \textbf{Proposed decision} & \textbf{Review owner and basis} \\ \hline
+D01 & Time boundaries & Use server time; require now $<$ start $\leq$ now + 7 days. The full booking must fit within 08:00--20:00 on one local date. & BA and Backend. Refines the seven-day limit in PA1. \\ \hline
+D02 & Time selection & Start times use 30-minute boundaries; allowed durations are 30, 60, 90, and 120 minutes. & BA and UI. Refines the start increment proposed in PA1. \\ \hline
+D03 & Quality targets & Adopt the measurable performance, usability, and recovery targets specified in Section 6.2 after feasibility checks. & Whole Team. PA1 deferred measurable targets to PA2. \\ \hline
+D04 & Reasons and validation & Rejection, admin cancellation, and maintenance block creation require a trimmed reason of 1--250 characters. Room capacity is an integer from 1 to 50. & BA. Establishes concrete input validation limits. \\ \hline
+D05 & Room suspension and edits & Suspension blocks new submissions and approvals but preserves existing Approved bookings. A capacity reduction cannot invalidate a future Approved booking. & BA and Backend. Clarifies interactions between F04 and F05. \\ \hline
+D06 & Maintenance lifecycle & An admin may remove a future maintenance block after confirmation, preserving history and reopening only the released interval. & BA. Provides a reversible availability operation within F05. \\ \hline
+D07 & Late and terminal requests & Student and admin cancellations require now $<$ booking start. Pending requests past their start remain visible but cannot be approved or student-cancelled; admins may reject them. & BA. Avoids introducing an automatic Expired status or scheduled background job. \\ \hline
+D08 & Identity and history & Keep room IDs stable. Do not expose other students' booking identities on the shared calendar; retain full status history and cancellation reasons. & BA and Backend. Refines privacy and traceability behavior implied by PA1. \\ \hline
+\end{srstable}
+\endgroup
+
+\subsection{Assumptions and Dependencies}
+The project assumes a single library with an initial set of eight rooms and up to 500 test accounts. All timestamps and schedule calculations use the \texttt{Asia/Ho\_Chi\_Minh} time zone.
+
+The backend relies on Firebase Authentication for identity-token validation and PostgreSQL for transaction-safe conflict prevention. One representative student submits each group request; the system does not manage individual group memberships or synchronize with personal calendars.
 
 \clearpage
