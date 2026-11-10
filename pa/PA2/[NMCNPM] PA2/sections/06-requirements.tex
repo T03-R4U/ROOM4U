@@ -12,16 +12,72 @@ FR-01 & \textless The system shall \ldots\textgreater & F01 & Must & \blankcell 
 \end{srstable}
 
 \subsection{Non-Functional Requirements}
-[Every non-functional requirement must be verifiable: state a metric and the conditions. Example: ``Under 200 concurrent users, the search page shall return results in $\leq$ 1 s at P95.'']
+The following targets are proposed requirements and verification conditions, not measured results or claims of compliance. D03 is the adoption decision for new numeric targets; the PA1 security, history, and conflict requirements remain in force.
 
-\begin{srstable}{p{0.13\textwidth}|p{0.17\textwidth}|p{0.42\textwidth}|L}
-\textbf{ID} & \textbf{Category} & \textbf{Requirement (measurable)} & \textbf{How it will be verified} \\ \hline
-NFR-01 & Performance & \blankcell & \blankcell \\ \hline
-NFR-02 & Security & \blankcell & \blankcell \\ \hline
-NFR-03 & Usability & \blankcell & \blankcell \\ \hline
-\blankcell & \blankcell & \blankcell & \blankcell \\ \hline
-\blankcell & \blankcell & \blankcell & \blankcell \\ \hline
-\end{srstable}
+\begingroup
+\small
+\setstretch{1.0}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.07\textwidth}|>{\raggedright\arraybackslash}p{0.15\textwidth}|>{\raggedright\arraybackslash}p{0.41\textwidth}|>{\raggedright\arraybackslash}p{0.28\textwidth}|}
+\hline
+\textbf{ID} & \textbf{Category} & \textbf{Measurable requirement} & \textbf{Verification} \\ \hline
+\endfirsthead
+\hline
+\textbf{ID} & \textbf{Category} & \textbf{Measurable requirement} & \textbf{Verification} \\ \hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+NFR-01 & Performance & On the PA1 reference VPS (2 vCPU, 4 GB RAM), P95 server response time for room search and own-request reads shall be at most 2 seconds during a 5-minute measured run after a 1-minute warm-up. Use 50 authenticated virtual users, each issuing one read every 5 seconds, an 80/20 search/history mix, 8 rooms, 500 accounts, and 5,000 bookings. & Record response times and errors with a load harness; exclude Firebase sign-in and client Internet latency. Report failed requests as well. \\ \hline
+NFR-02 & Security & Every tested unauthenticated or invalid-token protected API request shall return 401. Every tested authenticated operation outside the user's role or ownership shall return 403 without disclosing protected records. & Execute an endpoint-by-role-and-owner negative-test matrix; require 100\% of defined cases to pass. \\ \hline
+NFR-03 & Concurrency & Across 100 trials of two simultaneous approvals of conflicting Pending requests for one otherwise free interval, exactly one shall become Approved and the other shall remain Pending with a conflict outcome. No Approved/maintenance overlap shall result from concurrent approval and maintenance creation. & Use synchronized concurrent requests and inspect final states and history; also exercise approval versus cancellation and room suspension. \\ \hline
+NFR-04 & Accessibility & All actions in sign-in, room search, submission, own cancellation, and admin approval shall be operable by keyboard with visible focus, persistent field labels, and errors linked to their fields. Normal text contrast shall be at least 4.5 to 1; status shall not depend on color alone. & Perform a keyboard walkthrough and contrast measurement of S01--S08; record failures and corrections. \\ \hline
+NFR-05 & Usability & After a one-minute introduction, at least 3 of 4 student-role evaluators unfamiliar with the prototype shall find a suitable room and submit a valid request within 5 minutes without moderator assistance. All four shall identify that Pending is not confirmed. & Time the same scripted task, record completion, and ask the status question; obtain real participants before recording results. \\ \hline
+NFR-06 & Confidentiality & Application source, repository history, and application-controlled logs shall contain no passwords, Firebase service-account credentials, or full identity tokens. Production application traffic shall use HTTPS. Public client configuration is assessed separately from server credentials. & Scan source/history and sampled logs; inspect deployed HTTPS configuration. \\ \hline
+NFR-07 & Compatibility & The Must-have workflows shall pass on the stable desktop versions of Chrome and Edge used at verification and at viewport widths of 390 and 1366 pixels, without horizontal page scrolling or inaccessible controls. & Record browser versions and execute smoke tests at 390$\times$844 and 1366$\times$768. \\ \hline
+NFR-08 & Recovery & The team shall be able to restore the application database from a verified pre-demo backup on the reference environment within 30 minutes, preserving all records committed before that backup. & Time a restore drill and compare room, booking, and history counts and identifiers to the backup inventory; document the backup point. \\ \hline
+NFR-09 & Data consistency & After a rejected validation or failed status transition, 100\% of tested cases shall preserve the prior booking status, occupancy, and history without an orphan or partial event. & Inject validation, conflict, and persistence failures; compare before/after snapshots. \\ \hline
+NFR-10 & History retention & All successful creation and status-transition events shall remain retrievable with an unambiguous timestamp and actor throughout course verification. Corrections shall add events rather than overwrite prior history. & Create, approve, and cancel a request; verify ordered events and unchanged earlier values after later edits. \\ \hline
+NFR-11 & Error feedback & For every defined invalid input in BR-01--08 and BR-11--14, the interface shall identify the field or action requiring correction, preserve non-sensitive valid form values, and leave the operation uncommitted. & Exercise boundary and invalid-value cases; inspect field messages and retained values. \\ \hline
+NFR-12 & Localization & All application-controlled labels, validation messages, booking statuses, and dates in S01--S08 shall be available in Vietnamese. Times shall be presented in Asia/Ho\_Chi\_Minh with a visible date and time-zone label on booking and admin detail screens. & Review the screen/message inventory and compare known stored instants with displayed local times. \\ \hline
+\end{longtable}
+\endgroup
+
+\subsubsection{Source Mapping for Section 6.2 (NFR-01 to NFR-12)}
+This mapping links each non-functional requirement to its governing baseline decision or source, target scope and features, planned PA3 design area, and planned PA4 verification method.
+
+\begingroup
+\footnotesize
+\setstretch{1.0}
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.07\textwidth}|>{\raggedright\arraybackslash}p{0.19\textwidth}|>{\raggedright\arraybackslash}p{0.20\textwidth}|>{\raggedright\arraybackslash}p{0.22\textwidth}|>{\raggedright\arraybackslash}p{0.24\textwidth}|}
+\hline
+\textbf{Req. ID} & \textbf{Governing source / decision} & \textbf{Target scope and features} & \textbf{Planned PA3 design area} & \textbf{Planned PA4 verification} \\ \hline
+\endfirsthead
+\hline
+\textbf{Req. ID} & \textbf{Governing source / decision} & \textbf{Target scope and features} & \textbf{Planned PA3 design area} & \textbf{Planned PA4 verification} \\ \hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+NFR-01 & PA1 scope and D03 (quality targets) & UC-03, UC-05; room search and own-request reads & Read-path performance and response behavior & NFR-01 verification method in Section 6.2 \\ \hline
+NFR-02 & PA1 security baseline and D08 (identity and privacy) & System-wide protected operations (UC-01--UC-13) & Identity, role, and ownership enforcement & NFR-02 negative-test matrix in Section 6.2 \\ \hline
+NFR-03 & PA1 risk R1 (concurrent approvals) and D05 & UC-08, UC-12--UC-14 (approvals, suspension, and maintenance) & Consistent concurrent decision behavior & NFR-03 synchronized concurrency trials in Section 6.2 \\ \hline
+NFR-04 & D03 and UI design standards & UC-01, UC-03--UC-06, UC-08 (screens S01--S08) & Accessible interaction and status communication & NFR-04 keyboard and contrast verification in Section 6.2 \\ \hline
+NFR-05 & D03 and usability goals & UC-03--UC-05 (find, submit, and understand status) & Student task flow and status comprehension & NFR-05 scripted usability evaluation in Section 6.2 \\ \hline
+NFR-06 & PA1 security setup and Section 4 technology stack & System-wide source control, repository logs, and transport & Secret handling, logging, and transport-security design & NFR-06 source/log and HTTPS verification in Section 6.2 \\ \hline
+NFR-07 & PA1 environment specifications (Table 2) & System-wide screen interactions (S01--S08) & Browser and responsive interaction design & NFR-07 browser and viewport smoke checks in Section 6.2 \\ \hline
+NFR-08 & PA1 environment and demo operations & System-wide operational backup and recovery & Backup and recovery planning & NFR-08 restore drill in Section 6.2 \\ \hline
+NFR-09 & D05 and D07 (state and transaction safety) & UC-04, UC-06, UC-08--UC-14 (state-changing workflows) & Consistent state, occupancy, and history outcomes & NFR-09 failure-injection and snapshot comparison in Section 6.2 \\ \hline
+NFR-10 & D08 (traceability and auditability) & UC-04--UC-06, UC-08--UC-10, UC-13 (history retention) & Event and history information & NFR-10 history verification in Section 6.2; AC-08, AC-18 \\ \hline
+NFR-11 & D04 (reasons and validation limits) & UC-04, UC-08--UC-13 (input validation and feedback) & Validation and error-feedback design & NFR-11 invalid-input verification in Section 6.2 \\ \hline
+NFR-12 & PA1 differentiation and interface rules & UC-01--UC-13 (Vietnamese interface and time zones) & Vietnamese labels, statuses, and local time presentation & NFR-12 localization and time-display verification in Section 6.2 \\ \hline
+\end{longtable}
+\endgroup
 
 \subsection{Domain Requirements and Business Rules}
 \begin{srstable}{p{0.13\textwidth}|p{0.53\textwidth}|L}
