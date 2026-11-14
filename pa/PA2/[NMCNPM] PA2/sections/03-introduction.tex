@@ -22,7 +22,7 @@ Accounts and room data are simulated. The initial demonstration environment uses
 \subsection{Product Perspective}
 Room4U is an independent web application with a Node.js and Express backend, a PostgreSQL relational database, and Firebase Authentication.
 
-\textbf{System interfaces:} The system interfaces externally with Firebase Authentication to verify user identity tokens. Business logic, role verification, and data storage are managed internally by the Room4U backend and PostgreSQL database.
+\textbf{System interfaces:} The system interfaces externally with Firebase Authentication to verify user identity tokens. Firebase Authentication is responsible solely for identity verification. The backend application logic enforces business rules, validates user roles, and checks data ownership. PostgreSQL stores application data and supports transactional consistency.
 
 \textbf{User interfaces:} Users access the system through HTML5- and JavaScript-compatible web browsers over HTTPS. The user interface is optimized for desktop browsers, including Chrome and Edge, as well as standard mobile viewports.
 
@@ -53,7 +53,7 @@ Suspended room & A room that does not accept new submissions or approvals; exist
 Owner & The individual Student account that submitted a request, not the entire study group. \\ \hline
 Atomic decision & An action whose checks and committed outcome remain consistent despite concurrent actions. \\ \hline
 Baseline & A document or feature version reviewed and approved by the team for subsequent design and testing. \\ \hline
-P1 and D references & P1 refers to the submitted PA1 document (\texttt{T03\_PA1.pdf}); D01--D08 refer to the proposed PA2 baseline decisions. \\ \hline
+P1 and D references & P1 refers to the submitted PA1 document (\texttt{T03\_PA1.pdf}); D01--D08 refer to the accepted PA2 baseline decisions. \\ \hline
 \end{srstable}
 
 \subsection{Sources and Requirement Conventions}
@@ -64,19 +64,19 @@ P1 and D references & P1 refers to the submitted PA1 document (\texttt{T03\_PA1.
 All listed FRs and operational UCs are classified as Must-have. The complete five-feature baseline is committed at the feature level. References to PA3 design and PA4 testing matrices represent planned mappings rather than completed artifacts.
 
 \subsection{Baseline Decisions for PA2}
-The following proposed decisions make the specification executable and testable as refinements to the initial PA1 scope. The team must review and confirm or revise them before baselining; use change control if a decision changes the committed scope.
+The team accepted these decisions as refinements to the initial PA1 scope in the PA2 requirements baseline. Subsequent changes to a decision use change control.
 
 \begingroup
 \setstretch{1.0}
 \begin{srstable}{p{0.07\textwidth}|p{0.13\textwidth}|L|p{0.22\textwidth}}
-\textbf{ID} & \textbf{Topic} & \textbf{Proposed decision} & \textbf{Review owner and basis} \\ \hline
-D01 & Time boundaries & Use server time; require now $<$ start $\leq$ now + 7 days. The full booking must fit within 08:00--20:00 on one local date. & BA and Backend. Refines the seven-day limit in PA1. \\ \hline
+\textbf{ID} & \textbf{Topic} & \textbf{Accepted decision} & \textbf{Review owner and basis} \\ \hline
+D01 & Time boundaries & Use server time; require server now $<$ start $\leq$ server now + 7 days. The full booking must fit within 08:00--20:00 on one local date. & BA and Backend. Refines the seven-day limit in PA1. \\ \hline
 D02 & Time selection & Start times use 30-minute boundaries; allowed durations are 30, 60, 90, and 120 minutes. & BA and UI. Refines the start increment proposed in PA1. \\ \hline
 D03 & Quality targets & Adopt the measurable performance, usability, and recovery targets specified in Section 6.2 after feasibility checks. & Whole Team. PA1 deferred measurable targets to PA2. \\ \hline
 D04 & Reasons and validation & Rejection, admin cancellation, and maintenance block creation require a trimmed reason of 1--250 characters. Room capacity is an integer from 1 to 50. & BA. Establishes concrete input validation limits. \\ \hline
 D05 & Room suspension and edits & Suspension blocks new submissions and approvals but preserves existing Approved bookings. A capacity reduction cannot invalidate a future Approved booking. & BA and Backend. Clarifies interactions between F04 and F05. \\ \hline
 D06 & Maintenance lifecycle & An admin may remove a future maintenance block after confirmation, preserving history and reopening only the released interval. & BA. Provides a reversible availability operation within F05. \\ \hline
-D07 & Late and terminal requests & Student and admin cancellations require now $<$ booking start. Pending requests past their start remain visible but cannot be approved or student-cancelled; admins may reject them. & BA. Avoids introducing an automatic Expired status or scheduled background job. \\ \hline
+D07 & Late and terminal requests & Student and admin cancellations require server now $<$ booking start. Pending requests at or after their start remain visible but cannot be approved or student-cancelled; admins may reject them. & BA. Avoids introducing an automatic Expired status or scheduled background job. \\ \hline
 D08 & Identity and history & Keep room IDs stable. Do not expose other students' booking identities on the shared calendar; retain full status history and cancellation reasons. & BA and Backend. Refines privacy and traceability behavior implied by PA1. \\ \hline
 \end{srstable}
 \endgroup
