@@ -1,4 +1,56 @@
 \section{Problem Statement}
-[Elaborate the preliminary problem statement from PA1: business context, current problems, goals, operating environment, design and implementation constraints.]
+
+\subsection{Business Context}
+
+Room4U models the reservation of group-study rooms in a university library. The project assumes one library with eight rooms, each with its own capacity, equipment and available times. Students need these rooms to meet their groups, practise presentations or work on assignments together. Before requesting a room, they need to know which rooms suit their group and when those rooms are free. Librarians decide which requests to accept and look after the rooms.
+
+The library, rooms and accounts are simulated. This scenario is an assumption used to model the problem; it is not a survey or interview finding and does not describe confirmed processes of the real HCMUS library.
+
+\subsection{Current Problems}
+
+In the modeled scenario, a student asks for a room in person or through a separate form, while room information and request status are kept in different places. This creates the following problems:
+\begin{itemize}[leftmargin=1.5em,itemsep=2pt,topsep=2pt]
+  \item Before asking, a student cannot easily tell whether a room has sufficient capacity, the needed equipment and availability at the desired time.
+  \item Students may request already-booked time slots, so their requests cannot be accepted.
+  \item Librarians must check schedules manually before responding to each request.
+  \item Students cannot easily see whether a request is waiting, accepted or refused, or why a decision was made or changed.
+  \item Manual decisions can conflict: administrators acting on outdated availability may both accept bookings for the same room and time.
+\end{itemize}
+
+\subsection{Operating Environment}
+
+\textbf{Users:} Students and librarians use Room4U in a modern web browser on a laptop or phone over HTTPS. Tests focus on desktop Chrome and Edge and one mobile viewport.\par
+\textbf{Server:} One Linux server runs one application instance and one database. The planning assumption is 2 vCPUs, 4 GB of RAM and 20 GB of storage; a smoke test will check these figures.\par
+\textbf{Data:} The system uses eight simulated rooms and pre-created Student and Administrator accounts. The main demonstration uses two Student accounts and one Administrator account, and the planning environment allows up to 500 accounts. Test data covers schedule conflicts, time limits, capacity limits and permissions.\par
+\textbf{Time and language:} The library is open daily from 08:00 to 20:00. All times use the \texttt{Asia/Ho\_Chi\_Minh} time zone, and the interface is in Vietnamese.\par
+\textbf{Demonstration:} Demonstrations require Internet access and a Firebase test project. A data backup is made beforehand, and a backup video is ready in case the network fails.\par
+\textbf{Updates:} Users refresh a view to see the latest saved state. There is no real-time push, email or separate notification center.
+
+\subsection{Design and Implementation Constraints}
+\begingroup
+\small
+\setstretch{1.0}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.07\textwidth}|>{\raggedright\arraybackslash}p{0.75\textwidth}|>{\raggedright\arraybackslash}p{0.13\textwidth}|}
+\hline
+\textbf{ID} & \textbf{Constraint} & \textbf{Source} \\ \hline
+\endfirsthead
+\hline
+\textbf{ID} & \textbf{Constraint} & \textbf{Source} \\ \hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+DC-01 & \textbf{Scope.} The product covers five Must-have feature groups: F01 authentication and access control, F02 room search and schedule viewing, F03 personal request management, F04 booking request processing, and F05 room and availability management. Out of scope are connection to university login or library systems; self-service registration, password recovery and institution-wide identity management; group-member management and personal-calendar synchronization; payments, AI features and native mobile apps; email, reminders and a separate notification center; check-in, analytics, feedback and no-show penalties; and an interface for configuring booking rules. The fixed booking rules are still enforced. & PA1 3.3, 3.4 \\ \hline
+DC-02 & \textbf{Standalone simulation.} Room4U is a standalone website that works on test data. It does not connect to the student database, a real room-booking system, door locks or library attendance devices. University email addresses, if used for accounts, are test data and do not imply single sign-on. & PA1 3.1 \\ \hline
+DC-03 & \textbf{Technology.} The team plans HTML, CSS and JavaScript for the front end; Node.js with Express for the back end; PostgreSQL for the database; Firebase Authentication for sign-in; and a Linux server with Nginx and HTTPS. Vitest, Supertest, Playwright and GitHub Actions are planned for testing and continuous integration; GitHub and GitHub Projects are planned for source control and tasks. This stack is a planning decision to be validated by an environment check during PA3 design. Any alternative will be recorded as an Architecture Decision Record. & PA1 4.2 \\ \hline
+DC-04 & \textbf{Rule enforcement.} The system itself must enforce capacity, duration, opening hours, advance-booking limits and schedule-conflict rules; the user interface only assists data entry and feedback. Concurrent approvals must never create two overlapping Approved bookings for one room. The implementation approach will be decided in PA3. & PA1 3.1, 4.1 \\ \hline
+DC-05 & \textbf{Secrets.} Secrets such as API keys and service-account files must never be committed to the repository. & PA1 4.2 \\ \hline
+DC-06 & \textbf{Process.} The team follows the waterfall model, with test planning in the spirit of the V-model. Each phase ends with a phase gate represented by a PA submission and becomes a baseline. Later changes are recorded, their impact is assessed, and they are listed in the next PA. Coding starts after the PA3 design gate, and each code change is merged only after another member reviews its pull request. & PA1 4.2, 5.1; PA0 team contract \\ \hline
+DC-07 & \textbf{Team and schedule.} Four team members build the system within the course schedule, each planning about 7 hours per week. The Must-have features are the commitments for the implementation phase (PA5). & PA1 3.1; PA0 team contract \\ \hline
+\end{longtable}
+\endgroup
 
 \clearpage
