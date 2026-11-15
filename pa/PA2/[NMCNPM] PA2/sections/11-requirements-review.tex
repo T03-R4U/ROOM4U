@@ -1,11 +1,54 @@
 \section{Requirements Review}
-[Record the requirements review held before submission (who took part, date, issues found and how they were resolved). This version becomes the requirements baseline.]
 
-\begin{srstable}{p{0.06\textwidth}|p{0.36\textwidth}|p{0.2\textwidth}|L}
+\textbf{Review date:} 6 November 2026.\par
+\textbf{Participants:} \vnname{Nguyễn Thành Long}, \vnname{Lại Minh Thông}, \vnname{Nguyễn Kim Ngân} and \vnname{Trần Thiên Phúc}.\par
+\textbf{Record prepared by:} \vnname{Trần Thiên Phúc}.\par
+
+The team reviewed the PA2 draft by jointly reading the requirements and agreed that the requirements in the reviewed version were acceptable. This record summarizes that meeting outcome and the specification findings addressed during SRS preparation. The corrections below are documented separately from the meeting outcome so changes to the reviewed version remain traceable.
+
+\subsection{Issues and Resolutions}
+\begingroup
+\small
+\setstretch{1.0}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}{|>{\centering\arraybackslash}p{0.04\textwidth}|>{\raggedright\arraybackslash}p{0.25\textwidth}|>{\raggedright\arraybackslash}p{0.15\textwidth}|>{\raggedright\arraybackslash}p{0.46\textwidth}|}
+\hline
 \textbf{\#} & \textbf{Issue found} & \textbf{Requirement(s)} & \textbf{Resolution} \\ \hline
-\blankcell & \blankcell & \blankcell & \blankcell \\ \hline
-\blankcell & \blankcell & \blankcell & \blankcell \\ \hline
-\blankcell & \blankcell & \blankcell & \blankcell \\ \hline
-\end{srstable}
+\endfirsthead
+\hline
+\textbf{\#} & \textbf{Issue found} & \textbf{Requirement(s)} & \textbf{Resolution} \\ \hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+1 & UC-11 checked future Approved bookings before the Administrator selected Save, leaving the behavior unclear if a booking was approved concurrently with a room-capacity reduction. & FR-21; BR-14; NFR-09 & Corrected in the current draft. UC-11 step 5 now revalidates the fields, room-code uniqueness and proposed capacity against current future Approved bookings when Save is selected. The checks and save must remain consistent with concurrent approvals. E1--E3 describe invalid input, unsafe capacity reductions and persistence failures without partial changes. \\ \hline
+2 & The Resume alternative in UC-12 did not explicitly describe the room-state update or identify where execution continued. & FR-23; FR-27; BR-11 & Corrected in the current draft. A1.1--A1.5 now describe selection, explanation, confirmation, a current-state recheck and changing the room to active. Existing Approved bookings and maintenance blocks remain unchanged. The flow continues at main-flow step 5. Confirmation cancellation, stale state and persistence failures have explicit outcomes. \\ \hline
+3 & The maintenance-removal alternative in UC-13 lacked a complete sequence for checking eligibility, retaining the record, updating availability and handling changed conditions. & FR-26; FR-27; BR-15 & Corrected in the current draft. A1.1--A1.6 now require confirmation and a recheck that the block exists, remains active and has not started. Removal retains its record and preserves other bookings and maintenance blocks. The schedule is refreshed. E3--E4 handle ineligible or changed blocks and persistence failures without partial changes. \\ \hline
+4 & Some UC-09 alternative and exception flows did not identify their continuation or termination clearly enough to derive an unambiguous scenario. & FR-17; FR-19; BR-09--10; BR-13 & Corrected in the current draft. A2 explicitly continues at step 5 when a past-start request remains Pending. E1 returns to step 1 to correct the reason. A1 and E2 explicitly end the use case. A stale rejection cannot add a transition or history event. \\ \hline
+\end{longtable}
+\endgroup
+
+The revised passages can be inspected directly at the use-case and step references above. These resolutions describe corrections to the specification; they do not claim that the corresponding functionality has been implemented or tested.
+
+\subsubsection*{Room-Editing Consistency Correction}
+The room-editing description was aligned with FR-21 and UC-11. The internal room ID remains stable, while the room code may be updated subject to BR-14. Field validation and capacity checks are performed at Save time using current data.
+
+\subsection{Traceability Review}
+
+Section 10 contains entries for all 27 functional requirements, 12 non-functional requirements and 16 business rules. Each entry identifies related use cases and screens where applicable, a planned PA3 design topic, and a planned verification reference. System-wide operational requirements may use N/A for direct use-case and screen mappings.
+
+Requirement sources are recorded in Section 6 through the source columns and the NFR source-mapping paragraph. Together, Sections 6 and 10 provide the trace from PA1 and the PA2 clarification decisions to the specified behavior and planned verification.
+
+PA3 and PA4 references remain planned mappings. Actual design references and test-case identifiers will replace them when those artifacts are produced; no completed design or test execution is claimed in PA2.
+
+\subsection{Review Outcome and Requirements Baseline}
+
+\textbf{Meeting outcome:} The participants agreed that the requirements in the version reviewed during the meeting were acceptable.\par
+\textbf{Specification corrections:} The four findings listed in Section 11.1 have been addressed in the current working draft.\par
+\textbf{Confirmation of the revised version:} On 6 November 2026, \vnname{Nguyễn Thành Long}, \vnname{Trần Thiên Phúc}, \vnname{Lại Minh Thông} and \vnname{Nguyễn Kim Ngân} reviewed the corrected passages in UC-09, UC-11, UC-12 and UC-13 and confirmed that the four findings in Section 11.1 had been resolved.\par
+\textbf{Decisions D01--D08:} The team accepted D01--D08 as written in the reviewed SRS.\par
+\textbf{Baseline decision:} The team approved Room4U SRS version 1.0 as the PA2 requirements baseline for PA3 design and PA4 test planning. The team approved this shared document's content at the conclusion of the follow-up review as that baseline.
 
 \clearpage

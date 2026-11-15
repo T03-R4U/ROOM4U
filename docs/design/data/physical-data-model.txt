@@ -1,0 +1,92 @@
+erDiagram
+    direction LR
+
+    users {
+        uuid id PK
+        varchar(128) firebase_uid UK
+        text email
+        text full_name
+        text student_code nullable
+        text phone nullable
+        text role
+        timestamptz created_at
+    }
+
+    rooms {
+        uuid id PK
+        text code normalized unique
+        varchar(80) name
+        text floor nullable
+        integer capacity 1 to 50
+        varchar(250) description nullable
+        text photo_ref nullable
+        text state
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    room_equipment {
+        uuid room_id PK, FK
+        text equipment_code PK ADR-005 codes
+    }
+
+    booking_requests {
+        uuid id PK
+        uuid owner_id FK
+        uuid room_id FK
+        timestamptz start_at
+        timestamptz end_at
+        integer group_size
+        text status
+        text purpose ADR-005 codes
+        varchar(250) note nullable
+        uuid submission_key unique with owner_id
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    booking_events {
+        bigint id PK identity
+        uuid request_id FK
+        uuid actor_id FK
+        timestamptz occurred_at
+        text previous_status null for creation
+        text new_status
+        varchar(250) reason nullable by policy
+    }
+
+    maintenance_blocks {
+        uuid id PK
+        uuid room_id FK
+        timestamptz start_at
+        timestamptz end_at
+        varchar(250) reason
+        text state
+        uuid created_by FK
+        timestamptz created_at
+        uuid removed_by FK nullable while active
+        timestamptz removed_at nullable while active
+    }
+
+    room_occupancy {
+        bigint id PK identity
+        uuid room_id FK
+        uuid booking_id FK, UK nullable; XOR source
+        uuid maintenance_id FK, UK nullable; XOR source
+        timestamptz start_at FK composite source FK
+        timestamptz end_at FK composite source FK
+    }
+
+    users ..o{ booking_requests  submits
+    users ..o{ booking_events  performs
+    users ..o{ maintenance_blocks  creates
+    users o..o{ maintenance_blocks  removes
+
+    rooms --o{ room_equipment  has
+    rooms ..o{ booking_requests  receives
+    rooms ..o{ maintenance_blocks  has
+    rooms ..o{ room_occupancy  contains
+
+    booking_requests ..{ booking_events  records
+    booking_requests o..o room_occupancy  booking_source
+    maintenance_blocks o..o room_occupancy  maintenance_source

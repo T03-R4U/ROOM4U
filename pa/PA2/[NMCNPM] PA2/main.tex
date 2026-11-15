@@ -1,18 +1,24 @@
 \documentclass[12pt]{article}
 \usepackage[letterpaper,margin=0.75in,headheight=14.5pt,headsep=0.22in,footskip=0.35in]{geometry}
-\usepackage[T1]{fontenc}
+\usepackage[T5,T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
-\usepackage{amsmath,amssymb}
+\usepackage{amssymb}
 \usepackage{array}
 \usepackage{enumitem}
 \usepackage{environ}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{needspace}
 \usepackage{setspace}
 \usepackage{tabularx}
 \usepackage{titlesec}
 \usepackage{xcolor}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{mdframed}
 
 \definecolor{HCMUSBlue}{RGB}{0,112,192}
 \setlength{\parindent}{0pt}
@@ -33,6 +39,7 @@
 \newcolumntype{L}{>{\raggedright\arraybackslash}X}
 \newcolumntype{C}{>{\centering\arraybackslash}X}
 \newcommand{\blankcell}{\rule{0pt}{2.6ex}}
+\newcommand{\vnname}[1]{{\fontencoding{T5}\selectfont #1}}
 \NewEnviron{srstable}[1]{%
   \begin{center}\small
   \renewcommand{\arraystretch}{1.2}
@@ -42,22 +49,26 @@
   \end{tabularx}\end{center}
 }
 
+\newenvironment{usecasebox}[1]{%
+  \begin{mdframed}[frametitle={#1},frametitlebackgroundcolor=HCMUSBlue,frametitlefont=\color{white}\bfseries,linecolor=HCMUSBlue,linewidth=0.7pt,roundcorner=0pt,innerleftmargin=8pt,innerrightmargin=8pt,innertopmargin=6pt,innerbottommargin=6pt,skipabove=0pt,skipbelow=10pt,splittopskip=\topskip,splitbottomskip=\topskip]%
+  \refstepcounter{subsection}%
+  \addcontentsline{toc}{subsection}{\protect\numberline{\thesubsection}#1}%
+}{\end{mdframed}}%
+
 \makeatletter
 \renewcommand{\tableofcontents}{%
   \begin{center}
     {\color{HCMUSBlue}\bfseries\fontsize{30}{36}\selectfont Table of Contents\par}
   \end{center}
   \vspace{0.5\baselineskip}
-  {\setstretch{1.0}
-  \@starttoc{toc}%
-  }
+  {\setstretch{1.0}\@starttoc{toc}}%
 }
 \makeatother
 
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small Introduction to Software Engineering}
-\fancyhead[R]{\small Software Requirements Specification}
+\fancyhead[R]{\small Room4U -- Software Requirements Specification}
 \fancyfoot[L]{\small HCMUS}
 \fancyfoot[C]{\small SE Dept.}
 \fancyfoot[R]{\small\thepage}
@@ -74,11 +85,11 @@
 \begin{center}
   {\bfseries\fontsize{22}{28}\selectfont Introduction to Software Engineering\par}
   \vspace{1.15in}
-  {\fontsize{16}{20}\selectfont Software Requirements Specification\par}
+  {\bfseries\fontsize{20}{25}\selectfont Room4U -- Software Requirements Specification\par}
 \end{center}
 
 \vspace{0.65in}
-The student team is required to complete the Software Requirements Specification documentation for the assigned course project, following the attached template.
+{\fontsize{14}{20}\selectfont This document specifies the requirements for Room4U, a room-booking system prepared for the Introduction to Software Engineering course.\par}
 
 \vfill
 \begin{center}
@@ -100,7 +111,7 @@ The student team is required to complete the Software Requirements Specification
 \pagestyle{fancy}
 
 \begin{center}
-  {\color{HCMUSBlue}\bfseries\fontsize{40}{48}\selectfont Software Requirements Specification\par}
+  {\color{HCMUSBlue}\bfseries\fontsize{40}{48}\selectfont Room4U -- Software Requirements Specification\par}
 \end{center}
 
 \input{sections/01-objectives}

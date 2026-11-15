@@ -1,12 +1,120 @@
 \section{Requirements Traceability Matrix}
-[This matrix is extended in PA3 (design elements) and PA4 (test cases).]
 
-\begin{srstable}{p{0.13\textwidth}|p{0.18\textwidth}|p{0.16\textwidth}|p{0.28\textwidth}|L}
-\textbf{Req. ID} & \textbf{Use case} & \textbf{Screen} & \textbf{Design element (PA3)} & \textbf{Test cases (PA4)} \\ \hline
-FR-01 & UC-01 & \blankcell & \blankcell & \blankcell \\ \hline
-\blankcell & \blankcell & \blankcell & \blankcell & \blankcell \\ \hline
-\blankcell & \blankcell & \blankcell & \blankcell & \blankcell \\ \hline
-\blankcell & \blankcell & \blankcell & \blankcell & \blankcell \\ \hline
-\end{srstable}
+Every functional requirement (FR), non-functional requirement (NFR) and business rule (BR) below is traced to related use cases and screens where directly applicable, a planned PA3 design topic and a planned PA4 verification reference. System-wide operational requirements may use N/A where there is no direct user-facing use case or screen. The design topics and verification references are plans, not completed artifacts. PA3 will replace the planned topics with actual diagram or component references; PA4 will replace acceptance criteria and verification methods with concrete test-case identifiers.
 
-\clearpage
+FR-02, FR-03 and NFR-02 are cross-cutting constraints for every protected operation in UC-03--UC-13, including Student operations UC-04--UC-06. UC-14 inherits the caller's identity, role and ownership checks from UC-04 or UC-08 and has no independent actor or screen. UC-01 is sign-in; UC-02 can clear local private data when its session has expired. In grouped mappings, UC-12 uses S07 for Suspend/Resume, while S08 maps maintenance operations to UC-13.
+
+\subsection{Functional Requirements}
+\begingroup
+\small
+\setstretch{1.0}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.085\textwidth}|>{\raggedright\arraybackslash}p{0.19\textwidth}|>{\raggedright\arraybackslash}p{0.13\textwidth}|>{\raggedright\arraybackslash}p{0.28\textwidth}|>{\raggedright\arraybackslash}p{0.225\textwidth}|}
+\hline
+\textbf{Req. ID} & \textbf{Related use cases} & \textbf{Related screens} & \textbf{Planned PA3 design topic} & \textbf{Planned PA4 verification} \\ \hline
+\endfirsthead
+\hline
+\textbf{Req. ID} & \textbf{Related use cases} & \textbf{Related screens} & \textbf{Planned PA3 design topic} & \textbf{Planned PA4 verification} \\ \hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+FR-01 & UC-01 & S01 & Identity and access design & AC-01 \\ \hline
+FR-02 & UC-03--UC-13 (cross-cutting); UC-02 local-sign-out exception; UC-14 via caller & S02--S08 & Identity and access design & AC-02 \\ \hline
+FR-03 & UC-01, UC-03--UC-13 (cross-cutting); UC-14 via caller & S01--S08 & Identity and access design & AC-02 \\ \hline
+FR-04 & UC-05, UC-06 & S04 & Identity and access design & AC-02 \\ \hline
+FR-05 & UC-02 & S02--S08 & Identity and access design & AC-03 \\ \hline
+FR-06 & UC-03 & S02 & Room queries and calendar & AC-04 \\ \hline
+FR-07 & UC-03 & S02 & Room queries and calendar & AC-04 \\ \hline
+FR-08 & UC-03 & S02 & Room queries and calendar & AC-05 \\ \hline
+FR-09 & UC-03 & S02 & Room queries and calendar & AC-05 \\ \hline
+FR-10 & UC-04, UC-14 & S03 & Request lifecycle & AC-06, AC-07 \\ \hline
+FR-11 & UC-04 & S03, S04 & Request lifecycle & AC-06 \\ \hline
+FR-12 & UC-05 & S04 & Request lifecycle & AC-08 \\ \hline
+FR-13 & UC-06 & S04 & Request lifecycle & AC-09 \\ \hline
+FR-14 & UC-07 & S05, S06 & Approval transaction and history & AC-10 \\ \hline
+FR-15 & UC-08, UC-14 & S06 & Approval transaction and history & AC-10, AC-11 \\ \hline
+FR-16 & UC-08 (S06), UC-12 (S07), UC-13 (S08) & S06, S07, S08 & Approval transaction and history & AC-11, AC-12 \\ \hline
+FR-17 & UC-09 & S06, S04 & Approval transaction and history & AC-13 \\ \hline
+FR-18 & UC-10 & S06, S04 & Approval transaction and history & AC-14 \\ \hline
+FR-19 & UC-04, UC-06, UC-08--UC-10 & S04, S06 & Approval transaction and history & AC-08, AC-14 \\ \hline
+FR-20 & UC-11 & S07 & Room and maintenance design & AC-15 \\ \hline
+FR-21 & UC-11 & S07 & Room and maintenance design & AC-15 \\ \hline
+FR-22 & UC-12 & S07 & Room and maintenance design & AC-16 \\ \hline
+FR-23 & UC-12 & S07 & Room and maintenance design & AC-16 \\ \hline
+FR-24 & UC-13 & S08 & Room and maintenance design & AC-17 \\ \hline
+FR-25 & UC-13 & S08, S06 & Room and maintenance design & AC-12, AC-17 \\ \hline
+FR-26 & UC-13 & S08 & Room and maintenance design & AC-18 \\ \hline
+FR-27 & UC-03 (S02), UC-11--UC-12 (S07), UC-13 (S08) & S02, S07, S08 & Room and maintenance design & AC-16--AC-18 \\ \hline
+\end{longtable}
+\endgroup
+
+\subsection{Non-Functional Requirements}
+\begingroup
+\small
+\setstretch{1.0}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.085\textwidth}|>{\raggedright\arraybackslash}p{0.19\textwidth}|>{\raggedright\arraybackslash}p{0.13\textwidth}|>{\raggedright\arraybackslash}p{0.28\textwidth}|>{\raggedright\arraybackslash}p{0.225\textwidth}|}
+\hline
+\textbf{Req. ID} & \textbf{Related use cases} & \textbf{Related screens} & \textbf{Planned PA3 design topic} & \textbf{Planned PA4 verification} \\ \hline
+\endfirsthead
+\hline
+\textbf{Req. ID} & \textbf{Related use cases} & \textbf{Related screens} & \textbf{Planned PA3 design topic} & \textbf{Planned PA4 verification} \\ \hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+NFR-01 & UC-03, UC-05 & S02, S04 & Quality and cross-cutting design & NFR-01 verification method in Section 6.2 \\ \hline
+NFR-02 & UC-03--UC-13 (cross-cutting); UC-02 local-sign-out exception; UC-14 via caller & S02--S08 & Quality and cross-cutting design & NFR-02 verification method in Section 6.2 \\ \hline
+NFR-03 & UC-08 (S06), UC-12 (S07), UC-13 (S08) & S06, S07, S08 & Quality and cross-cutting design & NFR-03 verification method in Section 6.2 \\ \hline
+NFR-04 & UC-01, UC-03--UC-06, UC-08 & S01--S08 & Quality and cross-cutting design & NFR-04 verification method in Section 6.2 \\ \hline
+NFR-05 & UC-03--UC-05 & S02--S04 & Quality and cross-cutting design & NFR-05 verification method in Section 6.2 \\ \hline
+NFR-06 & UC-01--UC-13 & All screens & Quality and cross-cutting design & NFR-06 verification method in Section 6.2 \\ \hline
+NFR-07 & UC-01--UC-13 & S01--S08 & Quality and cross-cutting design & NFR-07 verification method in Section 6.2 \\ \hline
+NFR-08 & N/A -- system-wide operational requirement & N/A -- no direct user-facing screen & Backup and recovery planning & NFR-08 restore drill in Section 6.2 \\ \hline
+NFR-09 & UC-04, UC-06, UC-08--UC-13 & S03--S08 & Quality and cross-cutting design & NFR-09 verification method in Section 6.2 \\ \hline
+NFR-10 & UC-04--UC-06, UC-08--UC-10 & S04, S06 & Quality and cross-cutting design & NFR-10 verification method in Section 6.2 \\ \hline
+NFR-11 & UC-04, UC-08--UC-13 & S03, S06--S08 & Quality and cross-cutting design & NFR-11 verification method in Section 6.2 \\ \hline
+NFR-12 & UC-01--UC-13 & S01--S08 & Quality and cross-cutting design & NFR-12 verification method in Section 6.2 \\ \hline
+\end{longtable}
+\endgroup
+
+\subsection{Business Rules}
+\begingroup
+\small
+\setstretch{1.0}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.085\textwidth}|>{\raggedright\arraybackslash}p{0.19\textwidth}|>{\raggedright\arraybackslash}p{0.13\textwidth}|>{\raggedright\arraybackslash}p{0.28\textwidth}|>{\raggedright\arraybackslash}p{0.225\textwidth}|}
+\hline
+\textbf{Rule ID} & \textbf{Related use cases} & \textbf{Related screens} & \textbf{Planned PA3 design topic} & \textbf{Planned PA4 acceptance seeds} \\ \hline
+\endfirsthead
+\hline
+\textbf{Rule ID} & \textbf{Related use cases} & \textbf{Related screens} & \textbf{Planned PA3 design topic} & \textbf{Planned PA4 acceptance seeds} \\ \hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+BR-01 & UC-01, UC-04 & S01, S03 & Rule enforcement and state model & AC-01, AC-06 \\ \hline
+BR-02 & UC-04, UC-08, UC-14 & S03, S06 & Rule enforcement and state model & AC-07 \\ \hline
+BR-03 & UC-04, UC-08, UC-14 & S03, S06 & Rule enforcement and state model & AC-07 \\ \hline
+BR-04 & UC-04, UC-08, UC-14 & S03, S06 & Rule enforcement and state model & AC-07, AC-11 \\ \hline
+BR-05 & UC-03, UC-04, UC-08, UC-11, UC-14 & S02, S03, S06, S07 & Rule enforcement and state model & AC-04, AC-07, AC-15 \\ \hline
+BR-06 & UC-03, UC-04, UC-08, UC-13, UC-14 & S02, S03, S06, S08 & Rule enforcement and state model & AC-07, AC-11, AC-17 \\ \hline
+BR-07 & UC-03, UC-04, UC-08, UC-13 & S02, S03, S06, S08 & Rule enforcement and state model & AC-05, AC-06, AC-11 \\ \hline
+BR-08 & UC-08, UC-13, UC-14 & S06, S08 & Rule enforcement and state model & AC-11, AC-12 \\ \hline
+BR-09 & UC-04, UC-06, UC-08--UC-10 & S03, S04, S06 & Rule enforcement and state model & AC-06, AC-09--AC-14 \\ \hline
+BR-10 & UC-06, UC-09, UC-10 & S04, S06 & Rule enforcement and state model & AC-09, AC-13, AC-14 \\ \hline
+BR-11 & UC-04 (S03), UC-08 (S06), UC-12 (S07), UC-14 via caller & S03, S06, S07 & Rule enforcement and state model & AC-16 \\ \hline
+BR-12 & UC-04, UC-06, UC-10 & S03, S04, S06 & Rule enforcement and state model & AC-14 \\ \hline
+BR-13 & UC-09, UC-10, UC-13 & S06, S08 & Rule enforcement and state model & AC-13, AC-14, AC-17 \\ \hline
+BR-14 & UC-11 & S07 & Rule enforcement and state model & AC-15 \\ \hline
+BR-15 & UC-10, UC-13 & S06, S08 & Rule enforcement and state model & AC-12, AC-17, AC-18 \\ \hline
+BR-16 & UC-03, UC-05, UC-07 & S02, S04--S06 & Rule enforcement and state model & AC-02, AC-05, AC-08 \\ \hline
+\end{longtable}
+\endgroup

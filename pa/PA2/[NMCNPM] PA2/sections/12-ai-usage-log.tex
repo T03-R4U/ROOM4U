@@ -1,10 +1,33 @@
 \section{AI Usage Log}
-[Required in every PA (course GenAI policy). List each significant use of AI tools. Write ``No AI tools were used'' if none. Undisclosed AI use is treated as an academic integrity violation.]
 
-\begin{srstable}{p{0.06\textwidth}|p{0.15\textwidth}|p{0.18\textwidth}|p{0.20\textwidth}|L}
+\small
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{|p{0.05\textwidth}|p{0.12\textwidth}|p{0.14\textwidth}|p{0.18\textwidth}|p{0.42\textwidth}|}
+\hline
 \textbf{\#} & \textbf{Member} & \textbf{Tool} & \textbf{Task / purpose} & \textbf{How the output was verified and changed} \\ \hline
-1 & \blankcell & \textless e.g., \mbox{ChatGPT}, Claude, Copilot\textgreater & \textless e.g., draft use case UC-03 specification\textgreater & \textless e.g., reviewed with the BA, corrected 2 alternative flows\textgreater \\ \hline
-\blankcell & \blankcell & \blankcell & \blankcell & \blankcell \\ \hline
-\blankcell & \blankcell & \blankcell & \blankcell & \blankcell \\ \hline
-\blankcell & \blankcell & \blankcell & \blankcell & \blankcell \\ \hline
-\end{srstable}
+\endfirsthead
+\hline
+\textbf{\#} & \textbf{Member} & \textbf{Tool} & \textbf{Task / purpose} & \textbf{How the output was verified and changed} \\ \hline
+\endhead
+1 & \vnname{Trần Thiên Phúc} & ChatGPT & Assisted in drafting use case specifications and the requirements traceability matrix, and reviewing other SRS sections. & Compared the drafts with the agreed functional requirements and business rules; revised use-case flows and traceability mappings based on review findings, and checked the compiled PDF. \\ \hline
+
+2 & \vnname{Nguyễn Kim Ngân} &
+ChatGPT (OpenAI), Gemini (Google) &
+Used both tools to explore UI/UX design ideas, obtain
+suggestions for screen layouts, review interface designs,
+and generate visual mockup references. &
+Reviewed and evaluated the AI-generated suggestions,
+selected relevant ideas, and independently refined the
+mockups to ensure consistency with the project requirements.
+\\ \hline
+
+3 & \vnname{Nguyễn Thành Long} & ChatGPT, Gemini & Used the tools to generate objective examples and review/refine the Introduction and non-functional requirements against the Project Proposal. & Checked suggestions section by section against the completed Project Proposal, then selected and edited relevant material before incorporating it into the SRS. \\ \hline
+
+4 & \vnname{Lại Minh Thông} & Claude & Translated parts of the PA2 text between Vietnamese and English, and checked the English wording and meaning (grammar, terminology, and clarity of ``shall'' statements). & Compared the English output with the Vietnamese source and the terms used in PA1 (for example, Pending, Approved, and Administrator). Rejected or reworded phrases that changed the meaning. \\ \hline
+
+5 & \vnname{Lại Minh Thông} & Claude & Cut the text of individual sections (by heading) out of the full PA2 file and exported each section as a separate file. & Opened every exported file to check that it contains only its own section. Compared the text with the source file to confirm that nothing changed during extraction. Checked tables and page breaks. \\ \hline
+\end{longtable}
+\normalsize
+\renewcommand{\arraystretch}{1}
+\setlength{\tabcolsep}{6pt}

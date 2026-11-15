@@ -1,18 +1,60 @@
 \section{Requirements}
 \subsection{Functional Requirements}
-[Use ``The system shall \,\ldots'' statements. Number the requirements and group them by feature. Give each a MoSCoW priority and a source (stakeholder, interview, document).]
+Each functional requirement is a normative statement in the PA2 requirements baseline. Priority is Must unless changed through the approved change-control process in Section 3. Requirements are grouped by their PA1 feature ID.
 
-\begin{srstable}{p{0.11\textwidth}|L|p{0.12\textwidth}|p{0.12\textwidth}|p{0.2\textwidth}}
-\textbf{ID} & \textbf{Requirement} & \textbf{Feature} & \textbf{Priority} & \textbf{Source} \\ \hline
-FR-01 & \textless The system shall \ldots\textgreater & F01 & Must & \blankcell \\ \hline
-\blankcell & \blankcell & \blankcell & \blankcell & \blankcell \\ \hline
-\blankcell & \blankcell & \blankcell & \blankcell & \blankcell \\ \hline
-\blankcell & \blankcell & \blankcell & \blankcell & \blankcell \\ \hline
-\blankcell & \blankcell & \blankcell & \blankcell & \blankcell \\ \hline
-\end{srstable}
+\begingroup
+\small
+\setstretch{1.0}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.075\textwidth}|>{\raggedright\arraybackslash}p{0.49\textwidth}|>{\raggedright\arraybackslash}p{0.07\textwidth}|>{\raggedright\arraybackslash}p{0.07\textwidth}|>{\raggedright\arraybackslash}p{0.23\textwidth}|}
+\hline
+\textbf{ID} & \textbf{Requirement} & \textbf{Feat.} & \textbf{Prio.} & \textbf{Source} \\ \hline
+\endfirsthead
+\hline
+\textbf{ID} & \textbf{Requirement} & \textbf{Feat.} & \textbf{Prio.} & \textbf{Source} \\ \hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+\multicolumn{5}{|l|}{\textbf{F01 Authentication and access control}} \\ \hline
+FR-01 & The system shall allow a user who already has a Student or Administrator account to sign in with that account, and shall recognise whether the user is a Student or an Administrator. & F01 & Must & PA0 \#1; PA1 3.1, 3.3 \\ \hline
+FR-02 & The system shall allow only signed-in users to use its functions other than signing in. When a user's sign-in is no longer valid, the system shall ask the user to sign in again before continuing. & F01 & Must & PA0 \#1; PA1 F01 \\ \hline
+FR-03 & The system shall let each signed-in user use only the functions that belong to the user's role. Students may submit, view and cancel their own booking requests; Administrators may review, approve, reject and cancel booking requests and manage rooms and maintenance; both roles may search rooms and view schedules. The system shall refuse any function outside the user's role. & F01 & Must & PA0 \#1; PA1 F01 \\ \hline
+FR-04 & The system shall show a Student only the requests that the Student submitted, and shall allow a Student to cancel only those requests. & F01 & Must & PA0 \#5; PA1 F01, F03; D08 \\ \hline
+FR-05 & The system shall allow a signed-in user to sign out. After signing out, the system shall stop showing that user's private information and shall require the user to sign in again before any other function can be used. & F01 & Must & PA1 F01 \\ \hline
+\multicolumn{5}{|l|}{\textbf{F02 Room search and schedule viewing}} \\ \hline
+FR-06 & The system shall display the list of rooms and, for each room, its name, capacity, equipment, photo (or a placeholder image when the room has none) and current availability, including whether the room is suspended. & F02 & Must & PA0 \#2; PA1 F02 \\ \hline
+FR-07 & The system shall allow a user to filter the room list by a selected booking date and a group size given as a whole number, and shall leave out any room whose capacity is smaller than that group size. & F02 & Must & PA0 \#2; PA1 F02 \\ \hline
+FR-08 & For a selected room and date, the system shall display the periods occupied by Approved bookings and by active maintenance blocks. The system shall not show a Pending request as occupying a period. & F02 & Must & PA1 F02, 3.4.2 \\ \hline
+FR-09 & The system shall indicate which rooms are suspended and which periods are unavailable. The shared room schedule shall not reveal who made a booking or any other student's request history. & F02 & Must & PA1 F02, F05; D08 \\ \hline
+\multicolumn{5}{|l|}{\textbf{F03 Personal request management}} \\ \hline
+FR-10 & Before accepting a booking request, the system shall check the selected room, start time, duration and group size against the booking rules (BR-01 to BR-07 and BR-11). If any rule is not met, the system shall refuse the request, tell the student which input must be corrected, and not create a request. & F03 & Must & PA0 \#3, \#8; PA1 F03, 3.4.2; D01--D02 \\ \hline
+FR-11 & For each accepted booking request, the system shall create a separate request with the status Pending. A Pending request shall not reserve the room, and other requests for the same period may still be submitted. & F03 & Must & PA0 \#3; PA1 F03, 3.4.2 \\ \hline
+FR-12 & The system shall let a Student view their own requests, showing for each request the room, time, group size, current status and, when one was recorded, the reason for its rejection or cancellation. & F03 & Must & PA0 \#5; PA1 F03, 3.4.2 \\ \hline
+FR-13 & The system shall allow the owner of a Pending or Approved request to cancel it, after confirming the action, only before the request's start time. When a request is cancelled, the system shall set it to Cancelled and make any period it held available again. & F03 & Must & PA0 \#5; PA1 F03, 4.1; D07 \\ \hline
+\multicolumn{5}{|l|}{\textbf{F04 Booking request processing}} \\ \hline
+FR-14 & The system shall show an Administrator the Pending requests by default and shall allow the Administrator to filter requests by status, including Approved. For each request the system shall show the requesting student, room, time, group size and whether the requested period is currently available. & F04 & Must & PA0 \#6; PA1 F04 \\ \hline
+FR-15 & The system shall allow an Administrator to approve a request only if it is still Pending and, at the moment of approval, the room is not suspended and the request still meets the booking rules and does not overlap an Approved booking or an active maintenance block. An approved request shall have the status Approved. & F04 & Must & PA0 \#3; PA1 F04, 3.4.2 \\ \hline
+FR-16 & The system shall never allow two Approved bookings of the same room to overlap, nor an Approved booking to overlap an active maintenance block, even when several Administrators act on the same room at the same time (for example, approving two requests for the same period, or approving a request while another Administrator suspends the room or adds maintenance). When two requests for overlapping periods are approved at the same time, the system shall approve only one; the other shall stay Pending, no status change shall be recorded for it, and the Administrator shall be told that a conflict occurred. An action that cannot be completed because of such a conflict shall not change any request, booking or room, shall not create a partial history entry, and shall tell the Administrator the cause of the conflict. The result of a concurrent action that has already succeeded shall be kept, not undone. & F04 & Must & PA0 \#4; PA1 3.1, 4.1; D05 \\ \hline
+FR-17 & The system shall allow an Administrator to reject a Pending request by giving a valid reason (BR-13). The system shall set the request to Rejected and keep the reason in the request's history so that the student can see it. & F04 & Must & PA0 \#6; PA1 F04; D04, D07 \\ \hline
+FR-18 & The system shall allow an Administrator to cancel an Approved booking before its start time by giving a valid reason (BR-13). The system shall set the booking to Cancelled, keep the reason and history, and make its period available again. & F04 & Must & PA1 F04, 3.5.2; D04, D07 \\ \hline
+FR-19 & For the creation of every request and for every change of a request's status, the system shall record who performed it, when it happened, the previous and new status and, where a reason is required, the reason. & F04 & Must & PA1 3.4.2, 4.1; D08 \\ \hline
+\multicolumn{5}{|l|}{\textbf{F05 Room and availability management}} \\ \hline
+FR-20 & The system shall allow an Administrator to create a room, active from the moment it is created, by entering a unique room code, a name, a valid capacity, an equipment description and, optionally, a photo. & F05 & Must & PA0 \#7; PA1 F05; D04 \\ \hline
+FR-21 & The system shall allow an Administrator to change the details of a room (the same details entered when the room is created), keeping the room's identity so that its bookings stay linked to it. When the change is saved, the system shall check the new capacity against the group sizes of the room's future Approved bookings as they are at that moment, and shall refuse a capacity lower than the group size of any of them. This check shall also hold when a capacity change and the approval of a booking for the same room happen at the same time: the system shall never end in a state where a future Approved booking has a group size larger than the room's saved capacity. & F05 & Must & PA0 \#7; PA1 F05; D05, D08 \\ \hline
+FR-22 & The system shall allow an Administrator to suspend a room after confirming the action. While a room is suspended, the system shall refuse new requests for it and refuse to approve its Pending requests; its existing Approved bookings and history shall be kept. & F05 & Must & PA0 \#7; PA1 F05; D05 \\ \hline
+FR-23 & The system shall allow an Administrator to resume a suspended room so that it accepts new requests again. Resuming a room shall not remove any Approved booking or maintenance block; their periods remain unavailable. & F05 & Must & PA0 \#7; PA1 F05; D05 \\ \hline
+FR-24 & The system shall allow an Administrator to create a maintenance block for a room by entering a start time, an end time later than the start time, and a valid reason (BR-13). & F05 & Must & PA0 \#7; PA1 F05; D04 \\ \hline
+FR-25 & The system shall refuse a maintenance block that overlaps an Approved booking or another active maintenance block of the same room. When it refuses because of Approved bookings, the system shall show the Administrator which bookings are affected and shall not cancel them automatically. & F05 & Must & PA1 3.4.2, 3.5.2; BR-15 \\ \hline
+FR-26 & The system shall allow an Administrator to remove a maintenance block only while the block is active and has not yet started, and only after confirming the action. A successful removal shall end only the block's effect on the schedule: the system shall keep the record of the block, make available again the period the block occupied (unless an Approved booking or another active block also occupies it), and not change any booking or any other block. & F05 & Must & PA1 F05; D06 \\ \hline
+FR-27 & After an Administrator successfully changes a room or a maintenance block, the system shall use the new information in all later room searches, schedules, request submissions and approvals. & F05 & Must & PA1 F02, F05 \\ \hline
+\end{longtable}
+\endgroup
 
 \subsection{Non-Functional Requirements}
-The following targets are proposed requirements and verification conditions, not measured results or claims of compliance. D03 is the adoption decision for new numeric targets; the PA1 security, history, and conflict requirements remain in force.
+The targets below are requirements and verification conditions. They are not measured results or claims of compliance. D03 records the adoption of new numeric targets; the PA1 security, history, and conflict requirements remain in force.
 
 \begingroup
 \small
@@ -30,18 +72,18 @@ The following targets are proposed requirements and verification conditions, not
 \endfoot
 \hline
 \endlastfoot
-NFR-01 & Performance & On the PA1 reference VPS (2 vCPU, 4 GB RAM), P95 server response time for room search and own-request reads shall be at most 2 seconds during a 5-minute measured run after a 1-minute warm-up. Use 50 authenticated virtual users, each issuing one read every 5 seconds, an 80/20 search/history mix, 8 rooms, 500 accounts, and 5,000 bookings. & Record response times and errors with a load harness; exclude Firebase sign-in and client Internet latency. Report failed requests as well. \\ \hline
-NFR-02 & Security & Every tested unauthenticated or invalid-token protected API request shall return 401. Every tested authenticated operation outside the user's role or ownership shall return 403 without disclosing protected records. & Execute an endpoint-by-role-and-owner negative-test matrix; require 100\% of defined cases to pass. \\ \hline
-NFR-03 & Concurrency & Across 100 trials of two simultaneous approvals of conflicting Pending requests for one otherwise free interval, exactly one shall become Approved and the other shall remain Pending with a conflict outcome. No Approved/maintenance overlap shall result from concurrent approval and maintenance creation. & Use synchronized concurrent requests and inspect final states and history; also exercise approval versus cancellation and room suspension. \\ \hline
-NFR-04 & Accessibility & All actions in sign-in, room search, submission, own cancellation, and admin approval shall be operable by keyboard with visible focus, persistent field labels, and errors linked to their fields. Normal text contrast shall be at least 4.5 to 1; status shall not depend on color alone. & Perform a keyboard walkthrough and contrast measurement of S01--S08; record failures and corrections. \\ \hline
-NFR-05 & Usability & After a one-minute introduction, at least 3 of 4 student-role evaluators unfamiliar with the prototype shall find a suitable room and submit a valid request within 5 minutes without moderator assistance. All four shall identify that Pending is not confirmed. & Time the same scripted task, record completion, and ask the status question; obtain real participants before recording results. \\ \hline
-NFR-06 & Confidentiality & Application source, repository history, and application-controlled logs shall contain no passwords, Firebase service-account credentials, or full identity tokens. Production application traffic shall use HTTPS. Public client configuration is assessed separately from server credentials. & Scan source/history and sampled logs; inspect deployed HTTPS configuration. \\ \hline
-NFR-07 & Compatibility & The Must-have workflows shall pass on the stable desktop versions of Chrome and Edge used at verification and at viewport widths of 390 and 1366 pixels, without horizontal page scrolling or inaccessible controls. & Record browser versions and execute smoke tests at 390$\times$844 and 1366$\times$768. \\ \hline
-NFR-08 & Recovery & The team shall be able to restore the application database from a verified pre-demo backup on the reference environment within 30 minutes, preserving all records committed before that backup. & Time a restore drill and compare room, booking, and history counts and identifiers to the backup inventory; document the backup point. \\ \hline
-NFR-09 & Data consistency & After a rejected validation or failed status transition, 100\% of tested cases shall preserve the prior booking status, occupancy, and history without an orphan or partial event. & Inject validation, conflict, and persistence failures; compare before/after snapshots. \\ \hline
-NFR-10 & History retention & All successful creation and status-transition events shall remain retrievable with an unambiguous timestamp and actor throughout course verification. Corrections shall add events rather than overwrite prior history. & Create, approve, and cancel a request; verify ordered events and unchanged earlier values after later edits. \\ \hline
-NFR-11 & Error feedback & For every defined invalid input in BR-01--08 and BR-11--14, the interface shall identify the field or action requiring correction, preserve non-sensitive valid form values, and leave the operation uncommitted. & Exercise boundary and invalid-value cases; inspect field messages and retained values. \\ \hline
-NFR-12 & Localization & All application-controlled labels, validation messages, booking statuses, and dates in S01--S08 shall be available in Vietnamese. Times shall be presented in Asia/Ho\_Chi\_Minh with a visible date and time-zone label on booking and admin detail screens. & Review the screen/message inventory and compare known stored instants with displayed local times. \\ \hline
+NFR-01 & Performance & On the PA1 reference VPS (2 vCPU, 4 GB RAM), P95 server response time for room search and own-request reads shall be at most 2 seconds during a 5-minute measured run after a 1-minute warm-up. Use 50 authenticated virtual users, each issuing one read every 5 seconds, an 80/20 search/history mix, 8 rooms, 500 accounts, and 5,000 bookings. & Record response times and errors with a load harness; exclude Firebase sign-in and client Internet latency. Report failed requests as well.\newline\textit{Source / baseline decision:} PA1 Scope \& D03 (Quality Targets). \\ \hline
+NFR-02 & Security & Every tested unauthenticated or invalid-token protected API request shall return 401. Every tested authenticated operation outside the user's role or ownership shall return 403 without disclosing protected records. & Execute an endpoint-by-role-and-owner negative-test matrix; require 100\% of defined cases to pass.\newline\textit{Source / baseline decision:} PA1 Security Baseline \& D08 (Identity \& Privacy). \\ \hline
+NFR-03 & Concurrency & Across 100 trials of two simultaneous approvals of conflicting Pending requests for one otherwise free interval, exactly one shall become Approved and the other shall remain Pending with a conflict outcome. No Approved/maintenance overlap shall result from concurrent approval and maintenance creation. & Use synchronized concurrent requests and inspect final states and history; also exercise approval versus cancellation and room suspension.\newline\textit{Source / baseline decision:} PA1 Risk R1 (Concurrent Approvals) \& D05. \\ \hline
+NFR-04 & Accessibility & All actions in sign-in, room search, submission, own cancellation, and admin approval shall be operable by keyboard with visible focus, persistent field labels, and errors linked to their fields. Normal text contrast shall be at least 4.5 to 1; status shall not depend on color alone. & Use a keyboard walkthrough and contrast measurement of S01--S08; record failures and corrections.\newline\textit{Source / baseline decision:} D03 \& UI Design Standards. \\ \hline
+NFR-05 & Usability & After a one-minute introduction, at least 3 of 4 student-role evaluators unfamiliar with the prototype shall find a suitable room and submit a valid request within 5 minutes without moderator assistance. All four shall identify that Pending is not confirmed. & Time the same scripted task, record completion, and ask the status question; obtain real participants before recording results.\newline\textit{Source / baseline decision:} D03 \& Usability Goals. \\ \hline
+NFR-06 & Confidentiality & Application source, repository history, and application-controlled logs shall contain no passwords, Firebase service-account credentials, or full identity tokens. Production application traffic shall use HTTPS. Public client configuration is assessed separately from server credentials. & Scan source/history and sampled logs; inspect deployed HTTPS configuration.\newline\textit{Source / baseline decision:} PA1 Security Setup \& Section 4 Tech Stack. \\ \hline
+NFR-07 & Compatibility & The Must-have workflows shall pass on the stable desktop versions of Chrome and Edge used at verification and at viewport widths of 390 and 1366 pixels, without horizontal page scrolling or inaccessible controls. & Record browser versions and execute smoke tests at 390$\times$844 and 1366$\times$768.\newline\textit{Source / baseline decision:} PA1 Environment Specs (Table 2). \\ \hline
+NFR-08 & Recovery & The team shall be able to restore the application database from a verified pre-demo backup on the reference environment within 30 minutes, preserving all records committed before that backup. & Time a restore drill and compare room, booking, and history counts and identifiers to the backup inventory; document the backup point.\newline\textit{Source / baseline decision:} PA1 Environment \& Demo Operations. \\ \hline
+NFR-09 & Data consistency & After a rejected validation or failed status transition, 100\% of tested cases shall preserve the prior booking status, occupancy, and history without an orphan or partial event. & Inject validation, conflict, and persistence failures; compare before/after snapshots.\newline\textit{Source / baseline decision:} D05 \& D07 (State \& Transaction Safety). \\ \hline
+NFR-10 & History retention & All successful booking-request creation and status-transition events shall remain retrievable with an unambiguous timestamp and actor throughout course verification. Corrections shall add events rather than overwrite prior history. & Create, approve, and cancel a request; verify ordered events and unchanged earlier values after later edits.\newline\textit{Source / baseline decision:} D08 (Traceability \& Auditability). \\ \hline
+NFR-11 & Error feedback & For every defined invalid input in BR-01--08 and BR-11--14, the interface shall identify the field or action requiring correction, preserve non-sensitive valid form values, and leave the operation uncommitted. & Exercise boundary and invalid-value cases; inspect field messages and retained values.\newline\textit{Source / baseline decision:} D04 (Reasons \& Validation Limits). \\ \hline
+NFR-12 & Localization & All application-controlled labels, validation messages, booking statuses, and dates in S01--S08 shall be available in Vietnamese. Times shall be presented in Asia/Ho\_Chi\_Minh with a visible date and time-zone label on booking and admin detail screens. & Review the screen/message inventory and compare known stored instants with displayed local times.\newline\textit{Source / baseline decision:} PA1 Differentiation \& Interface Rules. \\ \hline
 \end{longtable}
 \endgroup
 
@@ -65,7 +107,7 @@ This mapping links each non-functional requirement to its governing baseline dec
 \hline
 \endlastfoot
 NFR-01 & PA1 scope and D03 (quality targets) & UC-03, UC-05; room search and own-request reads & Read-path performance and response behavior & NFR-01 verification method in Section 6.2 \\ \hline
-NFR-02 & PA1 security baseline and D08 (identity and privacy) & System-wide protected operations (UC-01--UC-13) & Identity, role, and ownership enforcement & NFR-02 negative-test matrix in Section 6.2 \\ \hline
+NFR-02 & PA1 security baseline and D08 (identity and privacy) & System-wide protected operations (UC-03--UC-13); UC-14 inherits caller checks & Identity, role, and ownership enforcement & NFR-02 negative-test matrix in Section 6.2 \\ \hline
 NFR-03 & PA1 risk R1 (concurrent approvals) and D05 & UC-08, UC-12--UC-14 (approvals, suspension, and maintenance) & Consistent concurrent decision behavior & NFR-03 synchronized concurrency trials in Section 6.2 \\ \hline
 NFR-04 & D03 and UI design standards & UC-01, UC-03--UC-06, UC-08 (screens S01--S08) & Accessible interaction and status communication & NFR-04 keyboard and contrast verification in Section 6.2 \\ \hline
 NFR-05 & D03 and usability goals & UC-03--UC-05 (find, submit, and understand status) & Student task flow and status comprehension & NFR-05 scripted usability evaluation in Section 6.2 \\ \hline
@@ -73,21 +115,127 @@ NFR-06 & PA1 security setup and Section 4 technology stack & System-wide source 
 NFR-07 & PA1 environment specifications (Table 2) & System-wide screen interactions (S01--S08) & Browser and responsive interaction design & NFR-07 browser and viewport smoke checks in Section 6.2 \\ \hline
 NFR-08 & PA1 environment and demo operations & System-wide operational backup and recovery & Backup and recovery planning & NFR-08 restore drill in Section 6.2 \\ \hline
 NFR-09 & D05 and D07 (state and transaction safety) & UC-04, UC-06, UC-08--UC-14 (state-changing workflows) & Consistent state, occupancy, and history outcomes & NFR-09 failure-injection and snapshot comparison in Section 6.2 \\ \hline
-NFR-10 & D08 (traceability and auditability) & UC-04--UC-06, UC-08--UC-10, UC-13 (history retention) & Event and history information & NFR-10 history verification in Section 6.2; AC-08, AC-18 \\ \hline
+NFR-10 & D08 (traceability and auditability) & UC-04--UC-06, UC-08--UC-10 (booking-request history) & Booking-request event and history information & NFR-10 history verification in Section 6.2; AC-08 \\ \hline
 NFR-11 & D04 (reasons and validation limits) & UC-04, UC-08--UC-13 (input validation and feedback) & Validation and error-feedback design & NFR-11 invalid-input verification in Section 6.2 \\ \hline
 NFR-12 & PA1 differentiation and interface rules & UC-01--UC-13 (Vietnamese interface and time zones) & Vietnamese labels, statuses, and local time presentation & NFR-12 localization and time-display verification in Section 6.2 \\ \hline
 \end{longtable}
 \endgroup
 
 \subsection{Domain Requirements and Business Rules}
-\begin{srstable}{p{0.13\textwidth}|p{0.53\textwidth}|L}
-\textbf{ID} & \textbf{Rule} & \textbf{Source (policy, law, standard)} \\ \hline
-BR-01 & \blankcell & \blankcell \\ \hline
-\blankcell & \blankcell & \blankcell \\ \hline
-\blankcell & \blankcell & \blankcell \\ \hline
-\end{srstable}
+The rules below are simulated project policies from PA1 and refinements D01--D08 agreed by the team. They are not laws or verified regulations of the real university library.
+
+\begingroup
+\small
+\setstretch{1.0}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.075\textwidth}|>{\raggedright\arraybackslash}p{0.68\textwidth}|>{\raggedright\arraybackslash}p{0.18\textwidth}|}
+\hline
+\textbf{ID} & \textbf{Rule} & \textbf{Source} \\ \hline
+\endfirsthead
+\hline
+\textbf{ID} & \textbf{Rule} & \textbf{Source} \\ \hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+BR-01 & Each request covers exactly one room in one simulated library. Accounts are created in advance, and a student submits a request on behalf of a group. & PA1 3.3--3.4 \\ \hline
+BR-02 & A booking must lie within 08:00--20:00 on a single date in the library's local time (Asia/Ho\_Chi\_Minh). A booking that ends exactly at 20:00 is allowed. & PA1 3.4.2; D01 \\ \hline
+BR-03 & A booking starts and ends on a :00 or :30 mark and lasts 30, 60, 90 or 120 minutes. & PA1 3.4.2; D02 \\ \hline
+BR-04 & When a request is submitted, and again when it is approved, the booking start must be later than the current time and no later than 7 days after the current time. The system compares times and shows them in Asia/Ho\_Chi\_Minh time. & PA1 3.4.2; D01 \\ \hline
+BR-05 & The group size is a whole number from 1 up to the room's current capacity. A room's capacity is a whole number from 1 to 50. & PA1 3.4.2; D04 \\ \hline
+BR-06 & Two periods overlap exactly when each starts before the other ends (start1 < end2 and start2 < end1). Periods that only touch, for example 09:00--10:00 and 10:00--11:00, do not overlap and may both be booked. & PA1 4.1 \\ \hline
+BR-07 & A Pending request does not reserve a room, so several overlapping Pending requests may exist. Approved bookings and active maintenance blocks make their periods unavailable. & PA1 3.4.2 \\ \hline
+BR-08 & Approving a request is one all-or-nothing decision made on the latest information: the request's status and time, the room's state and capacity, and conflicts are all checked again. The system must never hold two overlapping Approved bookings of one room, or an Approved booking that overlaps an active maintenance block. & PA1 3.1, 4.1 \\ \hline
+BR-09 & A booking request changes status only as follows: a new request starts as Pending; a Pending request may become Approved, Rejected or Cancelled; an Approved booking may become Cancelled. Rejected and Cancelled are final. & PA1 F03--F04, 4.1 \\ \hline
+BR-10 & A student may cancel their own Pending or Approved request only before its start time. An Administrator may cancel an Approved booking only before its start time. A Pending request whose start time has passed cannot be approved or cancelled by the student; only an Administrator can reject it. & PA1 4.1; D07 \\ \hline
+BR-11 & Suspending a room stops new requests for it and stops approval of its Pending requests. Existing Approved bookings stay until someone cancels them. Resuming a room does not remove any booking or maintenance block. & PA1 F05; D05 \\ \hline
+BR-12 & The room or time of an Approved booking cannot be edited. To change it, the booking is cancelled and a student submits a new request. Administrators cannot create bookings directly or act on behalf of a student. & PA1 3.4.2 \\ \hline
+BR-13 & Rejecting a request, cancelling an Approved booking as Administrator and creating a maintenance block each require a reason of 1--250 characters after leading and trailing spaces are removed. A maintenance block must end later than it starts and may cover closed hours or several dates. & PA1 3.5.2; D04 \\ \hline
+BR-14 & A room code must be unique, ignoring letter case and surrounding spaces. A room name has 1--80 characters and the equipment description at most 250 characters. When a capacity change is saved, it is checked against the group sizes of the future Approved bookings the room has at that moment, and must not fall below any of them. This also holds when the change happens at the same time as the approval of a booking: a future Approved booking never has a group size larger than the room's saved capacity. & PA1 F05; D04, D05 \\ \hline
+BR-15 & Creating a maintenance block never cancels a booking automatically. If an Approved booking overlaps the block, the Administrator first cancels that booking and then creates the block again. Two active maintenance blocks of one room must not overlap. A block can be removed only while it is active and has not yet started, after confirmation. Removing it ends only its effect on the schedule: its record is kept, only the period it occupied is reopened (unless a booking or another active block occupies that period), and no booking or other block changes. & PA1 3.4.2; D06 \\ \hline
+BR-16 & Booking history is kept. The details of a request are visible only to its owner and to Administrators. The shared room schedule shows when a room is unavailable, not who booked it. & PA1 F01, 3.4.2; D08 \\ \hline
+\end{longtable}
+\endgroup
+
+\subsubsection{Booking Status Transitions}
+\begingroup
+\small
+\setstretch{1.0}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.17\textwidth}|>{\raggedright\arraybackslash}p{0.30\textwidth}|>{\raggedright\arraybackslash}p{0.10\textwidth}|>{\raggedright\arraybackslash}p{0.35\textwidth}|}
+\hline
+\textbf{From} & \textbf{Action and actor} & \textbf{To} & \textbf{Required condition} \\ \hline
+\endfirsthead
+\hline
+\textbf{From} & \textbf{Action and actor} & \textbf{To} & \textbf{Required condition} \\ \hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+No request & Student submits a request & Pending & UC-14 passes; store creation history. \\ \hline
+Pending & Administrator approves & Approved & All checks of BR-08 still hold at the moment of approval. \\ \hline
+Pending & Administrator rejects & Rejected & A valid reason is given (BR-13); allowed even after the start time has passed. \\ \hline
+Pending or Approved & Student (the owner) cancels & Cancelled & Before start time; confirm ownership and current status. \\ \hline
+Approved & Administrator cancels & Cancelled & Before the start time; a valid reason is given (BR-13). \\ \hline
+Rejected or Cancelled & Any processing action & No change & Final states; the history is kept and never overwritten. \\ \hline
+\end{longtable}
+\endgroup
+
+Elapsed time does not by itself create a new status. An Approved booking stays Approved after its period has passed, as a historical record, and a Pending request whose start has passed remains visible so that an Administrator can reject it. There is no automatic Expired status, check-in or no-show handling.
+
+\subsubsection{Data Needed by the Requirements}
+\begingroup
+\small
+\setstretch{1.0}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.17\textwidth}|>{\raggedright\arraybackslash}p{0.76\textwidth}|}
+\hline
+\textbf{Record} & \textbf{Required information} \\ \hline
+\endfirsthead
+\hline
+\textbf{Record} & \textbf{Required information} \\ \hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+Room & Unique room code; name; capacity; equipment description; photo or a placeholder; state (active or suspended). \\ \hline
+Request & Owner; room; date and time in Asia/Ho\_Chi\_Minh; group size; current status; time of creation; rejection or cancellation reason when there is one. \\ \hline
+Booking event & Request; who acted; when; previous and new status; reason when one is required. A creation entry has no previous status. \\ \hline
+Maintenance & Room; start time; end time; reason; state (active or removed); the record is kept after removal. \\ \hline
+Account & Identity of the user and role (Student or Administrator). Passwords belong to the identity service and are not business records. \\ \hline
+\end{longtable}
+\endgroup
+
+Table names, types, indexes and locking mechanisms are PA3 decisions. This inventory defines information required by the use cases, not an implemented schema.
 
 \subsection{Acceptance Criteria}
-[For each Must-have feature, write acceptance criteria in Given / When / Then form. They will become acceptance test cases in PA4.]
+These Given/When/Then scenarios are acceptance-test seeds for PA4. AC-07 contains a family of separate boundary cases; instantiate each input separately. Fix the server clock in time-dependent tests and satisfy every other rule when exercising a positive boundary.
+
+\begin{description}[style=nextline,leftmargin=0pt,labelindent=0pt,labelsep=0pt,font=\bfseries,itemsep=4pt]
+\item[AC-01 Valid sign in] Feature F01. Given a pre-created Student account with valid credentials; when the student signs in; then a Student session is established and the room view is shown; no Admin controls are granted.
+\item[AC-02 Invalid identity and unauthorized access] Feature F01. Given a protected operation and, separately, a student who does not own request B102; when an invalid token is used, or the student requests B102 or an admin operation; then the invalid token receives 401; role/ownership violations receive 403; no protected data is returned or changed.
+\item[AC-03 Sign out] Feature F01. Given a user is signed in and viewing private request data; when the user signs out and navigates back or requests a protected action; then the private view is cleared and the application requires sign-in before showing private data or accepting the action.
+\item[AC-04 Capacity and date filtering] Feature F02. Given R02 has 6 seats and R03 has 3 seats; when a student searches for a group of 4 on a selected date; then R02 can appear and R03 is excluded; room equipment and date-specific availability remain inspectable.
+\item[AC-05 Public availability] Feature F02. Given R02 has an Approved booking 09:00--10:00, a Pending request 10:00--11:00 and maintenance 11:00--12:00; when a student views its calendar; then 09:00--10:00 and 11:00--12:00 are unavailable, Pending does not hold 10:00--11:00, and other students' identities are absent.
+\item[AC-06 Pending submission] Feature F03. Given an active room, valid future time, valid group size and no Approved or maintenance conflict; when the owner confirms a request; then one new request ID is returned with Pending status and a creation event; another student may still submit an overlapping Pending request.
+\item[AC-07 Boundary validation] Feature F03. Given server time is fixed for the test and the selected room has capacity 6; when start is at now, beyond now+7 days or at a :15 mark, duration is 29, 45 or 121 minutes, group size is 0 or 7, or the end is after 20:00; then the request is refused with no new record. Separately, duration 30, 60, 90 or 120, start exactly at now+7 days, start at a :00 or :30 mark, group size 6 and end exactly 20:00 pass when every other rule is satisfied.
+\item[AC-08 Own history and processing reason] Feature F03. Given a student owns requests in Pending, Approved, Rejected and Cancelled states; when the student opens My requests and a processed request; then the correct status and ordered history are shown; a required rejection/admin-cancellation reason is visible; other owners' requests are absent.
+\item[AC-09 Student cancellation boundary] Feature F03. Given a student owns a Pending or Approved request; when the student confirms cancellation before its start, then separately attempts at or after start or on a terminal request; then the first operation sets Cancelled and releases any reservation; later/terminal attempts fail without an extra transition.
+\item[AC-10 Approve an eligible request] Feature F04. Given an admin sees a Pending request with current room, time and group details and all rules pass; when the admin confirms approval; then the request becomes Approved, one history event is stored and the interval is unavailable in subsequent room views.
+\item[AC-11 Concurrent approvals and stale detail] Feature F04. Given two overlapping Pending requests exist for an otherwise free room, viewed by two admin sessions; when both approvals are submitted concurrently; then exactly one commits as Approved; the other remains Pending and reports a conflict. An already-processed request cannot be processed again.
+\item[AC-12 Approval versus maintenance race] Feature F04. Given a Pending request and a proposed maintenance block overlap; when an approval and block creation occur concurrently; then the committed outcome has either the Approved booking or the maintenance block, never both. The failed action leaves no partial event.
+\item[AC-13 Reject with reason] Feature F04. Given a Pending request, including one whose start is past; when an admin rejects it with a valid reason; then it becomes Rejected and the owner can read the reason; blank or overlong reasons fail without a transition.
+\item[AC-14 Admin cancellation and history] Feature F04. Given a future Approved booking; when an admin confirms cancellation with a valid reason; then it becomes Cancelled, its slot is released and history/reason remain visible. No edit-time/edit-room or hard-delete action is offered.
+\item[AC-15 Room creation and safe editing] Feature F05. Given an admin and a room with a future Approved group of 4; when the admin creates a unique valid room, then attempts a duplicate code or reduces the booked room capacity to 3; then the valid room is created; the duplicate and unsafe reduction are refused; existing booking and room identity remain intact. Separately, given a room with capacity 6 and a valid Pending request for a group of 4; when one admin reduces the capacity to 3 while another admin approves that request at the same time; then the final state never contains a future Approved booking whose group size exceeds the room's saved capacity. Either order of outcomes is acceptable, but both actions must not succeed in a way that breaks the capacity rule.
+\item[AC-16 Suspend and resume] Feature F05. Given an active room has an existing Approved booking and another Pending request; when the admin suspends the room, attempts new submission/approval, then resumes it; then suspension blocks those new actions but preserves the Approved booking; resumption restores eligibility only for otherwise free intervals.
+\item[AC-17 Resolve booking before maintenance] Feature F05. Given R03 has an Approved booking 10:00--11:00 that has not yet started; when an admin attempts maintenance 10:00--12:00, then cancels the booking with a reason and retries; then the first block attempt is refused and identifies the affected booking; after explicit cancellation, the block succeeds and prevents overlapping submission/approval.
+\item[AC-18 Remove future maintenance] Feature F05. Given a future active block and a different Approved booking exist; when an admin confirms removal of that block; then its interval is reopened only where no other occupancy applies, its record remains retained and the separate booking stays unchanged.
+\end{description}
 
 \clearpage

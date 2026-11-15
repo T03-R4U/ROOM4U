@@ -1,23 +1,464 @@
 \section{Use Case Specifications}
-[Specify the most important use cases (all Must-have use cases, at least 6). Number every step of the flows.]
 
-\subsection{Use Case UC-01}
-\begin{srstable}{p{0.34\textwidth}|L}
-\textbf{Use case ID} & UC-01 \\ \hline
-\textbf{Use case name} & \blankcell \\ \hline
-\textbf{Brief description} & \blankcell \\ \hline
-\textbf{Primary actor} & \blankcell \\ \hline
-\textbf{Secondary actors} & \blankcell \\ \hline
-\textbf{Priority} & \blankcell \\ \hline
-\textbf{Related requirements} & \blankcell \\ \hline
-\textbf{Trigger} & \blankcell \\ \hline
-\textbf{Pre-conditions} & \blankcell \\ \hline
-\textbf{Post-conditions} & \blankcell \\ \hline
-\textbf{Main flow} & 1. \,\ldots{} / 2. \,\ldots \\ \hline
-\textbf{Alternative flows} & A1 (at step 2): \,\ldots \\ \hline
-\textbf{Exception flows} & E1: \,\ldots \\ \hline
-\textbf{Business rules} & \blankcell \\ \hline
-\textbf{Non-functional constraints} & \blankcell \\ \hline
-\end{srstable}
+All listed use cases are Must-have. Student and Administrator accounts are pre-created. Firebase Authentication is the supporting external actor only in UC-01; the database and backend are internal parts of Room4U. Decisions D01--D08 are accepted in the reviewed requirements baseline; these specifications do not claim that the described functionality has been implemented or tested.
 
-\clearpage
+FR-02, FR-03 and NFR-02 apply as cross-cutting constraints to every protected action, including UC-04--UC-06. Room4U checks the current identity and application role; Student request operations also verify ownership. UC-14 inherits authentication and authorization from its caller, UC-04 or UC-08, and has no independent actor or screen. UC-02 can clear local private state when a session has expired. State-changing actions recheck the current record before committing. A failed or refused write leaves status, availability and required history unchanged. Pending requests do not reserve a room; Approved bookings and active maintenance blocks do. Intervals are half-open: they conflict only when each interval starts before the other ends, so adjacent intervals are allowed.
+
+\Needspace{6\baselineskip}
+\begin{usecasebox}{UC-01 Sign in}
+\noindent\textbf{Primary actor:} Student or Administrator.\quad
+\textbf{Supporting actor:} Firebase Authentication.\quad
+\textbf{Priority:} Must.\par
+\textbf{Trace:} FR-01--03; BR-01; NFR-02, NFR-04, NFR-06--07, NFR-12; Screen S01.\par
+\textbf{Trigger:} The user chooses Sign in.\par
+\textbf{Preconditions:} A pre-created account exists. An active Room4U session is not required; connectivity is handled at run time.\par
+\textbf{Success postcondition:} Room4U establishes the user's application role and opens the corresponding home view.\par
+\textbf{Failure postcondition:} No application session or protected data is granted.\par
+\textbf{Main flow}
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=1pt,topsep=2pt]
+  \item The user opens the sign-in screen.
+  \item The user enters the account email and password and submits the form.
+  \item Firebase Authentication verifies the credentials.
+  \item Room4U validates the returned identity and loads the account's application role.
+  \item Room4U opens the Student room view or the Administrator request queue according to that role.
+\end{enumerate}
+\Needspace{3\baselineskip}
+\textbf{Alternative flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{A1 (at step 1):} If a valid Room4U session already exists, the system opens the role-appropriate home view.
+\end{itemize}
+\Needspace{3\baselineskip}
+\textbf{Exception flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{E1 (at step 3):} Invalid credentials produce a generic error and allow the user to retry without revealing whether the account exists.
+  \item \textbf{E2 (at steps 3--4):} A network failure, invalid identity or missing application role prevents access and displays a retry or sign-in message.
+\end{itemize}
+\end{usecasebox}
+
+\Needspace{6\baselineskip}
+\begin{usecasebox}{UC-02 Sign out}
+\noindent\textbf{Primary actor:} Student or Administrator.\quad
+\textbf{Supporting actor:} None.\quad
+\textbf{Priority:} Must.\par
+\textbf{Trace:} FR-05; BR-16; NFR-02, NFR-06--07, NFR-12; Screens S02--S08.\par
+\textbf{Trigger:} The user chooses Sign out.\par
+\textbf{Preconditions:} A Room4U application session is active, or local private state remains after session expiry.\par
+\textbf{Success postcondition:} The client session and private view are cleared; subsequent protected operations require sign-in.\par
+\textbf{Failure postcondition:} The interface does not re-expose private data after sign-out is requested.\par
+\textbf{Main flow}
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=1pt,topsep=2pt]
+  \item The user chooses Sign out from the authenticated navigation.
+  \item Room4U displays a confirmation dialog over the current view with Cancel and Log Out actions.
+  \item The user confirms by choosing Log Out.
+  \item Room4U clears the current client identity and private cached view.
+  \item Room4U opens the sign-in screen.
+  \item When the user later requests a protected operation, Room4U requires a valid session.
+\end{enumerate}
+\Needspace{3\baselineskip}
+\textbf{Alternative flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{A1 (at step 3):} If the user chooses Cancel or closes the dialog, Room4U closes it and leaves the session and current screen unchanged; the use case ends.
+  \item \textbf{A2 (at step 1):} If the session has already expired, Room4U clears the local private view and opens the sign-in screen; the use case ends.
+\end{itemize}
+\Needspace{3\baselineskip}
+\textbf{Exception flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{E1 (at step 4):} If the network is unavailable, Room4U still clears local private state and opens the sign-in screen; it does not claim to revoke a token copied outside the client.
+\end{itemize}
+\end{usecasebox}
+
+\Needspace{6\baselineskip}
+\begin{usecasebox}{UC-03 Search rooms and view schedule}
+\noindent\textbf{Primary actor:} Student or Administrator.\quad
+\textbf{Supporting actor:} None.\quad
+\textbf{Priority:} Must.\par
+\textbf{Trace:} FR-06--09, FR-27; BR-05--07, BR-16; NFR-01--02, NFR-04--05, NFR-07, NFR-12; Screen S02.\par
+\textbf{Trigger:} The user opens Rooms or changes a search filter.\par
+\textbf{Preconditions:} The user is signed in.\par
+\textbf{Success postcondition:} Matching rooms and the selected room's current schedule are visible without exposing another student's identity.\par
+\textbf{Failure postcondition:} No room, booking or maintenance data is changed.\par
+\textbf{Main flow}
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=1pt,topsep=2pt]
+  \item The user selects a booking date and enters a group size.
+  \item Room4U validates the filter values.
+  \item Room4U lists matching rooms with stable identity, name, capacity, equipment, image or placeholder, and availability state.
+  \item The user opens a room's schedule for the selected date.
+  \item Room4U displays Approved occupancy and active maintenance intervals, omits Pending requests as reservations, and hides other students' personal details.
+\end{enumerate}
+\Needspace{3\baselineskip}
+\textbf{Alternative flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{A1 (at step 3):} If no room matches, Room4U shows an empty state and lets the user change the filters.
+  \item \textbf{A2 (at step 5):} If the selected room is suspended, Room4U labels it and does not offer a valid new-request path for that room.
+\end{itemize}
+\Needspace{3\baselineskip}
+\textbf{Exception flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{E1 (at step 2):} Invalid filter values receive field-level errors; no search result is presented as valid.
+  \item \textbf{E2 (at steps 3--5):} A load failure shows a retry state and is not presented as an empty result or a free schedule.
+\end{itemize}
+\end{usecasebox}
+
+\Needspace{6\baselineskip}
+\begin{usecasebox}{UC-04 Submit booking request}
+\noindent\textbf{Primary actor:} Student.\quad
+\textbf{Supporting actor:} None.\quad
+\textbf{Priority:} Must.\par
+\textbf{Trace:} FR-10--11, FR-19, FR-27; BR-01--07, BR-09, BR-11; NFR-02, NFR-04--05, NFR-07, NFR-09--12; Screens S03--S04.\par
+\textbf{Trigger:} The student chooses Request room.\par
+\textbf{Preconditions:} The student is signed in and has selected a room. Eligibility is checked at submission time rather than assumed from the earlier search.\par
+\textbf{Success postcondition:} One uniquely identified Pending request and its creation event exist; the request does not reserve the interval.\par
+\textbf{Failure postcondition:} No request or history event is created.\par
+\textbf{Main flow}
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=1pt,topsep=2pt]
+  \item Room4U shows the selected room, booking rules and time zone.
+  \item The student enters the date, start time, duration and group size.
+  \item The student confirms the request.
+  \item Room4U includes UC-14 to validate the current room, time, capacity and availability.
+  \item Room4U creates the Pending request and its creation event as one consistent outcome; the interval remains available unless another Approved booking or maintenance block occupies it.
+  \item Room4U shows the request ID and explains that administrator approval is still required.
+\end{enumerate}
+\Needspace{3\baselineskip}
+\textbf{Alternative flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{A1 (at step 2):} The student changes the selected room and returns to search without submitting.
+\end{itemize}
+\Needspace{3\baselineskip}
+\textbf{Exception flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{E1 (at step 4):} Invalid input, a suspended room, an Approved overlap or active maintenance prevents submission; Room4U identifies the issue and preserves valid form values.
+  \item \textbf{E2 (at step 5):} If persistence fails, neither the request nor its event is committed; Room4U does not show a request ID or claim success.
+\end{itemize}
+\end{usecasebox}
+
+\Needspace{6\baselineskip}
+\begin{usecasebox}{UC-05 View own requests and history}
+\noindent\textbf{Primary actor:} Student.\quad
+\textbf{Supporting actor:} None.\quad
+\textbf{Priority:} Must.\par
+\textbf{Trace:} FR-04, FR-12, FR-19; BR-09, BR-16; NFR-01--02, NFR-04--05, NFR-07, NFR-10, NFR-12; Screen S04.\par
+\textbf{Trigger:} The student opens My requests.\par
+\textbf{Preconditions:} The student is signed in.\par
+\textbf{Success postcondition:} The student sees only their own request details and ordered history.\par
+\textbf{Failure postcondition:} No request belonging to another student is disclosed.\par
+\textbf{Main flow}
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=1pt,topsep=2pt]
+  \item The student opens My requests.
+  \item Room4U retrieves requests owned by the authenticated student only.
+  \item The student selects one of their requests.
+  \item Room4U shows its room, time, group size, status, ordered history and any recorded processing or cancellation reason.
+  \item The student may refresh to retrieve newer committed data.
+\end{enumerate}
+\Needspace{3\baselineskip}
+\textbf{Alternative flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{A1 (at step 2):} If the student has no requests, Room4U shows an empty state and a link to room search.
+\end{itemize}
+\Needspace{3\baselineskip}
+\textbf{Exception flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{E1 (at step 3):} A direct link to another owner's request is denied without returning its private details.
+  \item \textbf{E2 (at steps 2--5):} A load failure offers retry and is not presented as a successful current result.
+\end{itemize}
+\end{usecasebox}
+
+\Needspace{6\baselineskip}
+\begin{usecasebox}{UC-06 Cancel own request}
+\noindent\textbf{Primary actor:} Student.\quad
+\textbf{Supporting actor:} None.\quad
+\textbf{Priority:} Must.\par
+\textbf{Trace:} FR-04, FR-13, FR-19; BR-09--10, BR-12; NFR-02, NFR-04, NFR-07, NFR-09--12; Screen S04.\par
+\textbf{Trigger:} The owner chooses Cancel request.\par
+\textbf{Preconditions:} The student is signed in and is the request owner. Current status and start-time eligibility are rechecked during the flow.\par
+\textbf{Success postcondition:} An eligible request becomes Cancelled, a transition event is retained, and any Approved interval is released.\par
+\textbf{Failure postcondition:} Status, occupancy and history remain unchanged.\par
+\textbf{Main flow}
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=1pt,topsep=2pt]
+  \item The student opens their request and chooses Cancel.
+  \item Room4U presents the room and time details and asks for confirmation.
+  \item The student confirms.
+  \item Room4U rechecks ownership, current Pending or Approved status, and that the booking start is still in the future.
+  \item Room4U records Cancelled with a transition event and refreshes the request view; if the request was Approved, its interval is released.
+\end{enumerate}
+\Needspace{3\baselineskip}
+\textbf{Alternative flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{A1 (at step 3):} If the student declines confirmation, Room4U leaves the request unchanged.
+\end{itemize}
+\Needspace{3\baselineskip}
+\textbf{Exception flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{E1 (at step 4):} A started request or a Rejected or Cancelled request cannot be cancelled again.
+  \item \textbf{E2 (at step 4):} If another session has changed the request, Room4U refuses the stale action, refreshes the view and reports the current status.
+  \item \textbf{E3 (at step 5):} A persistence failure preserves the prior status, occupancy and history.
+\end{itemize}
+\end{usecasebox}
+
+\Needspace{6\baselineskip}
+\begin{usecasebox}{UC-07 Review booking request queue}
+\noindent\textbf{Primary actor:} Administrator.\quad
+\textbf{Supporting actor:} None.\quad
+\textbf{Priority:} Must.\par
+\textbf{Trace:} FR-14, FR-19; BR-09, BR-16; NFR-02, NFR-07, NFR-12; Screens S05--S06.\par
+\textbf{Trigger:} The Administrator opens Booking requests.\par
+\textbf{Preconditions:} The user is signed in with the Administrator role.\par
+\textbf{Success postcondition:} The Administrator sees the current request queue and details for a selected request; no request is processed by viewing it.\par
+\textbf{Failure postcondition:} No request status or history is changed.\par
+\textbf{Main flow}
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=1pt,topsep=2pt]
+  \item The Administrator opens the booking request queue.
+  \item Room4U defaults to Pending and offers status filters, including Approved, with room, time, group size and submission time.
+  \item The Administrator selects a request.
+  \item Room4U shows the current request history and the room's current availability.
+  \item Room4U offers only the processing actions permitted by the request's current status.
+\end{enumerate}
+\Needspace{3\baselineskip}
+\textbf{Alternative flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{A1 (at step 2):} If there are no Pending requests, Room4U shows an empty queue.
+\end{itemize}
+\Needspace{3\baselineskip}
+\textbf{Exception flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{E1 (at step 4):} If the selected item is stale or already processed, Room4U shows its latest state and refreshes the queue.
+  \item \textbf{E2 (at steps 1--5):} A user without the Administrator role is denied access.
+  \item \textbf{E3 (at steps 2--4):} A load failure is reported with a retry option and is not shown as an empty queue.
+\end{itemize}
+\end{usecasebox}
+
+\Needspace{6\baselineskip}
+\begin{usecasebox}{UC-08 Approve booking request}
+\noindent\textbf{Primary actor:} Administrator.\quad
+\textbf{Supporting actor:} None.\quad
+\textbf{Priority:} Must.\par
+\textbf{Trace:} FR-15--16, FR-19, FR-27; BR-02--09, BR-11; NFR-02--04, NFR-07, NFR-09--12; Screen S06.\par
+\textbf{Trigger:} The Administrator chooses Approve for a request.\par
+\textbf{Preconditions:} The Administrator is signed in and has opened a request. Eligibility is not assumed from the displayed details.\par
+\textbf{Success postcondition:} One eligible request becomes Approved, reserves its interval and has a corresponding history event.\par
+\textbf{Failure postcondition:} No conflicting booking or partial status, availability or history change is committed.\par
+\textbf{Main flow}
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=1pt,topsep=2pt]
+  \item The Administrator reviews the request and chooses Approve.
+  \item Room4U asks the Administrator to confirm the decision.
+  \item The Administrator confirms.
+  \item Room4U rechecks that the request is Pending and includes UC-14 using current committed data for time, room state, capacity and occupancy.
+  \item Room4U commits Approved status, the reservation and its history as one atomic outcome.
+  \item Room4U displays the outcome and updates the queue and room schedule.
+\end{enumerate}
+\Needspace{3\baselineskip}
+\textbf{Alternative flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{A1 (at step 3):} If the Administrator declines confirmation, Room4U makes no change.
+\end{itemize}
+\Needspace{3\baselineskip}
+\textbf{Exception flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{E1 (at steps 4--5):} If a concurrent approval or maintenance operation wins the conflict, this request remains Pending and Room4U reports the conflict.
+  \item \textbf{E2 (at step 4):} If the request is no longer Pending, its start is no longer eligible, the room is suspended or its capacity is insufficient, Room4U refuses approval and reports the cause.
+  \item \textbf{E3 (at step 5):} A write failure leaves the prior status, occupancy and history intact.
+\end{itemize}
+\end{usecasebox}
+
+\Needspace{6\baselineskip}
+\begin{usecasebox}{UC-09 Reject booking request}
+\noindent\textbf{Primary actor:} Administrator.\quad
+\textbf{Supporting actor:} None.\quad
+\textbf{Priority:} Must.\par
+\textbf{Trace:} FR-17, FR-19; BR-09--10, BR-13; NFR-02, NFR-07, NFR-09--12; Screens S04, S06.\par
+\textbf{Trigger:} The Administrator chooses Reject.\par
+\textbf{Preconditions:} The Administrator is signed in and has opened a request.\par
+\textbf{Success postcondition:} A Pending request becomes Rejected and its valid reason is retained in the owner's history.\par
+\textbf{Failure postcondition:} The current status and history remain unchanged.\par
+\textbf{Main flow}
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=1pt,topsep=2pt]
+  \item The Administrator chooses Reject and enters a reason.
+  \item Room4U trims and validates the reason as nonblank and 1--250 characters.
+  \item The Administrator confirms rejection.
+  \item Room4U rechecks that the request is Pending.
+  \item Room4U records Rejected, its transition event and reason, then refreshes the queue.
+\end{enumerate}
+\Needspace{3\baselineskip}
+\textbf{Alternative flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{A1 (at step 3):} If the Administrator cancels the confirmation, Room4U leaves the request status and history unchanged; the use case ends.
+  \item \textbf{A2 (at step 4):} If the request is still Pending but its start time has passed, rejection remains allowed; continue at step 5.
+\end{itemize}
+\Needspace{3\baselineskip}
+\textbf{Exception flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{E1 (at step 2):} A blank or overlong reason receives a field error. Room4U preserves the entered reason and makes no status or history change; return to step 1 to correct it.
+  \item \textbf{E2 (at step 4):} If a concurrent action has already processed the request, Room4U refuses the stale rejection, displays the current status and refreshes the queue. No transition or history event is added; the use case ends.
+  \item \textbf{E3 (at step 5):} A persistence failure leaves the request and history unchanged.
+\end{itemize}
+\end{usecasebox}
+
+\Needspace{6\baselineskip}
+\begin{usecasebox}{UC-10 Cancel approved booking as admin}
+\noindent\textbf{Primary actor:} Administrator.\quad
+\textbf{Supporting actor:} None.\quad
+\textbf{Priority:} Must.\par
+\textbf{Trace:} FR-18--19; BR-09--10, BR-12--13, BR-15; NFR-02, NFR-07, NFR-09--12; Screens S04, S06.\par
+\textbf{Trigger:} The Administrator opens an Approved booking and chooses Cancel.\par
+\textbf{Preconditions:} The Administrator is signed in; the booking is accessible from request details or an affected-booking link.\par
+\textbf{Success postcondition:} A future Approved booking becomes Cancelled, its interval is released and the reason and history remain visible to authorized users.\par
+\textbf{Failure postcondition:} The booking, occupancy and history remain unchanged.\par
+\textbf{Main flow}
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=1pt,topsep=2pt]
+  \item The Administrator reviews the Approved booking details.
+  \item The Administrator enters a cancellation reason and confirms.
+  \item Room4U validates the reason, current Approved status and that the booking start is still in the future.
+  \item Room4U records Cancelled with its transition event and reason, and releases the interval as one consistent outcome.
+  \item The owner can see the cancellation reason in My requests.
+\end{enumerate}
+\Needspace{3\baselineskip}
+\textbf{Alternative flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{A1 (at step 2):} If the Administrator abandons cancellation, Room4U makes no change.
+\end{itemize}
+\Needspace{3\baselineskip}
+\textbf{Exception flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{E1 (at step 3):} An invalid reason, a booking that has started, or a changed status prevents cancellation.
+  \item \textbf{E2 (at step 4):} A write failure preserves the prior status, reservation and history.
+\end{itemize}
+\end{usecasebox}
+
+\Needspace{6\baselineskip}
+\begin{usecasebox}{UC-11 Create or edit room details}
+\noindent\textbf{Primary actor:} Administrator.\quad
+\textbf{Supporting actor:} None.\quad
+\textbf{Priority:} Must.\par
+\textbf{Trace:} FR-20--21, FR-27; BR-05, BR-14; NFR-02, NFR-07, NFR-09, NFR-11--12; Screen S07.\par
+\textbf{Trigger:} The Administrator chooses Add room or Edit room.\par
+\textbf{Preconditions:} The Administrator is signed in. An existing room is selected for an edit.\par
+\textbf{Success postcondition:} Valid room details are saved and available to later room queries; an edit retains the stable room ID.\par
+\textbf{Failure postcondition:} No invalid room or partial edit is stored; existing details remain intact.\par
+\textbf{Main flow}
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=1pt,topsep=2pt]
+  \item The Administrator opens a new-room form or an existing room.
+  \item The Administrator enters the room code, name, capacity and equipment description, and may select a preloaded photo.
+  \item Room4U validates field limits, room-code uniqueness after trimming and case-insensitive comparison, and the capacity range.
+  \item For an edit, Room4U preserves the room ID and checks that the proposed capacity still accommodates every future Approved group in that room.
+  \item The Administrator chooses Save. Room4U revalidates the fields, room-code uniqueness and, for an edit, the proposed capacity against all future Approved bookings using current data. These checks and the save form one consistent operation so concurrent approvals cannot violate the room-capacity constraint. Room4U saves valid details, retains the room ID on edit and displays the result.
+\end{enumerate}
+\Needspace{3\baselineskip}
+\textbf{Alternative flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{A1 (at step 1):} For an edit, Room4U loads existing values and retains the stable room ID.
+  \item \textbf{A2 (at step 2):} If no photo is selected, Room4U uses the placeholder image.
+\end{itemize}
+\Needspace{3\baselineskip}
+\textbf{Exception flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{E1 (at steps 3 or 5):} Invalid fields or a duplicate room code prevent saving. Room4U identifies invalid fields and preserves valid form values; return to step 2.
+  \item \textbf{E2 (at steps 4 or 5):} If the proposed capacity is below the group size of a future Approved booking, including one approved concurrently, Room4U refuses the edit and leaves stored room and booking data unchanged; return to step 2.
+  \item \textbf{E3 (at step 5):} A persistence failure prevents saving. No partial room change is committed; Room4U preserves entered form values and reports the failure. The Administrator may retry from step 5 or leave without saving.
+\end{itemize}
+\end{usecasebox}
+
+\Needspace{6\baselineskip}
+\begin{usecasebox}{UC-12 Suspend or resume room}
+\noindent\textbf{Primary actor:} Administrator.\quad
+\textbf{Supporting actor:} None.\quad
+\textbf{Priority:} Must.\par
+\textbf{Trace:} FR-16, FR-22--23, FR-27; BR-08, BR-11; NFR-02--03, NFR-07, NFR-09, NFR-11--12; Screen S07.\par
+\textbf{Trigger:} The Administrator chooses Suspend or Resume.\par
+\textbf{Preconditions:} The Administrator is signed in.\par
+\textbf{Success postcondition:} The room's active/suspended state changes consistently; existing Approved bookings and maintenance remain retained.\par
+\textbf{Failure postcondition:} No partial availability change occurs.\par
+\textbf{Main flow}
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=1pt,topsep=2pt]
+  \item The Administrator opens Room Management, selects a room and chooses Suspend.
+  \item Room4U explains that suspension blocks new submissions and approvals but preserves existing Approved bookings and maintenance.
+  \item The Administrator confirms suspension.
+  \item Room4U atomically rechecks the current room state and sets it to suspended, consistently with concurrent approvals. An approval committed before suspension remains valid; an approval after suspension fails. Existing Approved bookings and maintenance blocks remain unchanged.
+  \item Subsequent searches, submissions and approval checks reflect the new room state.
+\end{enumerate}
+\Needspace{3\baselineskip}
+\textbf{Alternative flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{A1 (at step 1):} If the selected room is suspended, the Administrator chooses Resume instead of Suspend.
+  \item \textbf{A1.1:} The Administrator selects Resume.
+  \item \textbf{A1.2:} Room4U explains that new submissions and approvals will be allowed again, subject to booking rules and existing occupancy.
+  \item \textbf{A1.3:} The Administrator confirms.
+  \item \textbf{A1.4:} Room4U rechecks that the room is still suspended and changes it to active, preserving all existing Approved bookings and maintenance blocks.
+  \item \textbf{A1.5:} Continue at main-flow step 5, then end the use case.
+  \item \textbf{A2 (at main-flow step 3 or A1.3):} If the Administrator declines confirmation, the room state, bookings and maintenance blocks remain unchanged; the use case ends.
+\end{itemize}
+\Needspace{3\baselineskip}
+\textbf{Exception flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{E1 (at step 4 or A1.4):} If the room state has changed since it was displayed, Room4U refuses the stale action, shows the current state and refreshes the view. The use case ends; the Administrator may start a new action using refreshed data.
+  \item \textbf{E2 (at step 4 or A1.4):} A persistence failure prevents the state change. No partial change is committed; the prior room state, bookings and maintenance blocks remain intact. Room4U reports the failure and the use case ends.
+\end{itemize}
+\end{usecasebox}
+
+\Needspace{6\baselineskip}
+\begin{usecasebox}{UC-13 Manage maintenance blocks}
+\noindent\textbf{Primary actor:} Administrator.\quad
+\textbf{Supporting actor:} None.\quad
+\textbf{Priority:} Must.\par
+\textbf{Trace:} FR-16, FR-24--27; BR-06--08, BR-13, BR-15; NFR-02--03, NFR-07, NFR-09, NFR-11--12; Screens S06, S08.\par
+\textbf{Trigger:} The Administrator chooses Add maintenance or Remove block.\par
+\textbf{Preconditions:} The Administrator is signed in and has selected a room.\par
+\textbf{Success postcondition:} A valid non-conflicting block is added, or an eligible future block is removed with its record retained; other occupancy is preserved.\par
+\textbf{Failure postcondition:} No maintenance record or booking is partially changed.\par
+\textbf{Main flow}
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=1pt,topsep=2pt]
+  \item The Administrator enters the room, maintenance start and end, and reason.
+  \item Room4U validates that the end is later than the start and that the trimmed reason contains 1--250 characters.
+  \item Room4U checks current Approved bookings and active maintenance intervals for the selected room.
+  \item The Administrator confirms creation.
+  \item Room4U rechecks the conflicts and commits the maintenance block and its retained record as one consistent outcome.
+  \item Room4U updates room schedules and subsequent submission and approval checks.
+\end{enumerate}
+\Needspace{3\baselineskip}
+\textbf{Alternative flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{A1 (at step 1):} Remove a future maintenance block.
+  \item \textbf{A1.1:} The Administrator selects an existing maintenance block.
+  \item \textbf{A1.2:} Room4U displays its room, interval, reason and current state, then asks for confirmation of removal.
+  \item \textbf{A1.3:} The Administrator confirms removal.
+  \item \textbf{A1.4:} Room4U rechecks with current server time and data that the block still exists, is active and has not started.
+  \item \textbf{A1.5:} Room4U marks the block removed and retains its record. Removal does not change any booking or other maintenance block.
+  \item \textbf{A1.6:} Room4U refreshes the schedule and availability. Only the removed block ceases to restrict the interval; all other occupancy and room-state restrictions still apply. The use case ends.
+  \item \textbf{A2 (at step 3):} If an Approved booking conflicts with the proposed maintenance interval, the Administrator opens the affected booking and performs UC-10. After successful cancellation, continue at main-flow step 2 to revalidate the interval and recheck all conflicts. If cancellation is declined or fails, no maintenance block is created and the use case ends.
+  \item \textbf{A3 (at step 4 or A1.3):} If the Administrator declines confirmation, no maintenance or booking data changes; the use case ends.
+\end{itemize}
+\Needspace{3\baselineskip}
+\textbf{Exception flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{E1 (at step 2):} An invalid interval or reason prevents creation. Room4U identifies the invalid fields and preserves valid form values; return to step 1.
+  \item \textbf{E2 (at steps 3 or 5):} An Approved booking overlap, overlapping active maintenance block or competing approval prevents creation. Room4U identifies the conflict and commits no new block; the Administrator may revise the interval from step 1 or follow A2 to resolve an affected booking.
+  \item \textbf{E3 (at A1.4):} If the selected block no longer exists, has already been removed or has started, Room4U refuses removal and refreshes the displayed data. No maintenance or booking record changes; the use case ends.
+  \item \textbf{E4 (at step 5 or A1.5):} A persistence failure prevents creation or removal. No partial change is committed; existing maintenance and booking records remain unchanged. Room4U reports the failure and the use case ends.
+\end{itemize}
+\end{usecasebox}
+
+\Needspace{6\baselineskip}
+\begin{usecasebox}{UC-14 Validate booking eligibility}
+\noindent\textbf{Primary actor:} None (included internal behavior).\par
+\textbf{Supporting actor:} None.\quad\textbf{Priority:} Must.\par
+\textbf{Trace:} FR-10, FR-15--16, FR-27; BR-01--08, BR-11; NFR-02--03, NFR-09, NFR-11; Screens S03, S06.\par
+\textbf{Trigger:} UC-04 or UC-08 requests eligibility validation.\par
+\textbf{Preconditions:} The calling use case has authenticated and authorized its actor; candidate request fields and current room data are available.\par
+\textbf{Success postcondition:} Eligibility is returned to the caller for that operation; this included behavior does not itself create or transition a request.\par
+\textbf{Failure postcondition:} A specific violated rule is returned and no booking state changes.\par
+\textbf{Main flow}
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,itemsep=1pt,topsep=2pt]
+  \item Room4U checks that the selected room exists and currently accepts submissions or approvals for the requested action.
+  \item Room4U validates date, start time, duration, advance limit and group size against the current room capacity.
+  \item Room4U checks current Approved bookings and active maintenance for overlap using the defined interval boundaries.
+  \item Room4U returns the eligibility result to UC-04 or UC-08; for approval, the caller commits only if the current validation and approval remain one atomic decision.
+\end{enumerate}
+\Needspace{3\baselineskip}
+\textbf{Alternative flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{A1 (at step 3):} Overlapping Pending requests are ignored because they do not reserve room capacity.
+\end{itemize}
+\Needspace{3\baselineskip}
+\textbf{Exception flows}
+\begin{itemize}[label={},leftmargin=0pt,itemsep=1pt,topsep=1pt]
+  \item \textbf{E1 (at steps 1--3):} If a rule fails or the current data is no longer eligible, Room4U returns the cause to the caller and leaves all records unchanged.
+\end{itemize}
+\end{usecasebox}
