@@ -1,0 +1,129 @@
+\section{Traceability Update}
+This matrix replaces PA2 planned design topics with concrete identifiers in the current proposed PA3 design. The identifiers refer to artifacts present in this draft, not an accepted implementation. PA4 and PA5 verification remains planned. PA2 Section 6 supplies the requirement definitions and original PA1/D01--D08 source mapping; this design does not silently alter that source.
+
+Coverage spans 27 functional requirements, 12 non-functional requirements, and 16 business rules (55 unique entries). A screen represents a user-facing realization rather than proof of backend enforcement. M01 protects authenticated operations. Commands that modify an existing room or its schedule acquire the room guard through C08.
+
+\subsection{Functional Requirements}
+\begingroup
+\small
+\setstretch{1.0}
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.07\textwidth}|>{\raggedright\arraybackslash}p{0.25\textwidth}|>{\raggedright\arraybackslash}p{0.09\textwidth}|>{\raggedright\arraybackslash}p{0.40\textwidth}|>{\raggedright\arraybackslash}p{0.12\textwidth}|}
+\hline
+\shortstack{\textbf{Req.}\\\textbf{ID}} & \textbf{Component, class, or sequence} & \textbf{Screen} & \textbf{Data or design element} & \textbf{Planned verification} \\
+\hline
+\endfirsthead
+\hline
+\shortstack{\textbf{Req.}\\\textbf{ID}} & \textbf{Component, class, or sequence} & \textbf{Screen} & \textbf{Data or design element} & \textbf{Planned verification} \\
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+FR-01 & M01; C07; C12 & S01 & ADR-003; \texttt{users.firebase\_uid} & AC-01 \\ \hline
+FR-02 & M01; C07 & S01--S08 & 401 guard; no-store private responses & AC-02 \\ \hline
+FR-03 & M01; C07; M02 & S01--S08 & Server role map; route role table & AC-02 \\ \hline
+FR-04 & M03; C14; C04 & S04 & \texttt{booking\_requests.owner\_id} equals the authenticated application user ID & AC-02; AC-08 \\ \hline
+FR-05 & CT1 session adapter & S02--S08 & Clear SDK session and private DTOs & AC-03 \\ \hline
+FR-06 & M03; C14 & S02 & \texttt{rooms} and \texttt{room\_equipment} safe DTO (\texttt{equipmentCodes} and display descriptions); placeholder photo; ADR-005 & AC-04 \\ \hline
+FR-07 & M03; C14 & S02 & \texttt{rooms} capacity filter; local-date window & AC-04 \\ \hline
+FR-08 & M03; C14; DB01 & S02 & \texttt{room\_occupancy}; Pending absent & AC-05 \\ \hline
+FR-09 & M03; C14 & S02 & State label; identity-free calendar DTO & AC-05; AC-02 \\ \hline
+FR-10 & M06; C03; SQ01 & S03 & ADR-004; ADR-005; room lock, eligibility policy, categorized purpose, and note ($\leq 250$ characters) & AC-06; AC-07 \\ \hline
+FR-11 & M04; C04; SQ01 & S03; S04 & \texttt{booking\_requests} with categorized purpose and note ($\leq 250$ characters), plus creation event; no occupancy; ADR-005 & AC-06 \\ \hline
+FR-12 & M03; C14 & S04 & Role-scoped detail (purpose, note, permitted requester information) and ordered \texttt{booking\_events}; ADR-005 & AC-08 \\ \hline
+FR-13 & M04; C01; SQ03 & S04 & Cancellation ChangeSet and release & AC-09 \\ \hline
+FR-14 & M03; C14 & S05; S06 & Default Pending and Approved filter & AC-10; queue/filter inspection \\ \hline
+FR-15 & M04; C04; SQ02 & S06 & C03 policy; atomic approval ChangeSet & AC-10; AC-11 \\ \hline
+FR-16 & M07; C08; SQ02; SQ05 & S06; S07; S08 & ADR-002; shared exclusion and room guard & AC-11; AC-12; NFR-03 method \\ \hline
+FR-17 & M04; C01; C04 & S06; S04 & Pending $\rightarrow$ Rejected; reason event & AC-13 \\ \hline
+FR-18 & M04; C01; C04 & S06; S04 & Administrator cancellation with reason and release & AC-14 \\ \hline
+FR-19 & M04; C08 & S04; S06 & Append-only \texttt{booking\_events} in command transaction & AC-06; AC-08; AC-10; AC-13--14 \\ \hline
+FR-20 & M05; C02; C05; C09; C14 & S07 & Atomic room/equipment save; GET /admin/rooms filtered list, stable order, displayStatus and unfiltered summary & AC-15 \\ \hline
+FR-21 & M05; C05; SQ04 & S07 & Room guard; future Approved maximum; atomic \texttt{room\_equipment} update in one transaction; ADR-005 & AC-15; capacity/approval race design \\ \hline
+FR-22 & M05; C05; U06 & S07 & State command under room guard & AC-16 \\ \hline
+FR-23 & M05; C05; U06 & S07 & Resume without releasing occupancy & AC-16 \\ \hline
+FR-24 & M05; C06; SQ05 & S08 & \texttt{maintenance\_blocks} and occupancy & AC-17 \\ \hline
+FR-25 & M05; C06; SQ05 & S08; S06 & SCHEDULE\_CONFLICT DTO; Approved-booking conflicts first, explicit UC-10 eligibility handoff; maintenance-block conflict otherwise & AC-12; AC-17 \\ \hline
+FR-26 & M05; C06; C10; U06 & S08 & Retained removed block; delete projection & AC-18 \\ \hline
+FR-27 & M03; M05; C14 & S02; S07; S08 & Reread committed data after mutation; S07 refreshes list and summary & AC-15--18 \\ \hline
+\end{longtable}
+\endgroup
+
+\subsection{Non-Functional Requirements}
+\begingroup
+\small
+\setstretch{1.0}
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.07\textwidth}|>{\raggedright\arraybackslash}p{0.22\textwidth}|>{\raggedright\arraybackslash}p{0.12\textwidth}|>{\raggedright\arraybackslash}p{0.36\textwidth}|>{\raggedright\arraybackslash}p{0.16\textwidth}|}
+\hline
+\textbf{Req.} & \textbf{Design realization} & \textbf{Screen} & \textbf{Mechanism} & \textbf{Planned verification} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Req.} & \textbf{Design realization} & \textbf{Screen} & \textbf{Mechanism} & \textbf{Planned verification} \\
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+NFR-01 & M03; C14; query indexes & S02; S04 & Paged reads and bounded DTOs; reference workload and dataset as defined in PA2 Section 6.2; measurement planned for PA4 & PA2 Section 6.2 NFR-01 load method \\ \hline
+NFR-02 & M01; C07; M02 & All private screens & 401/403 role and owner enforcement & PA2 Section 6.2 NFR-02 negative matrix \\ \hline
+NFR-03 & M07; C08; ADR-002 & S06; S07; S08 & Room guard, exclusion, and rollback & PA2 Section 6.2 NFR-03 race trials \\ \hline
+NFR-04 & CT1 semantic controls & S01--S08 & Labels, focus, error association, and contrast & PA2 Section 6.2 NFR-04 walkthrough \\ \hline
+NFR-05 & CT1 request journey & S02--S04 & Visible Pending explanation and short form & PA2 Section 6.2 NFR-05 real evaluator task \\ \hline
+NFR-06 & M01; A04 deployment & All screens & HTTPS, secrets outside repository, no token logging & PA2 Section 6.2 NFR-06 inspection \\ \hline
+NFR-07 & CT1 responsive layout & S01--S08 & 390/1366 widths; no unavailable control & PA2 Section 6.2 NFR-07 browser smoke \\ \hline
+NFR-08 & A04 backup procedure & N/A operational & Restricted backup and timed restore inventory & PA2 Section 6.2 NFR-08 restore drill \\ \hline
+NFR-09 & M07; C08; ADR-002 & S03--S08 & Same-client transaction; no partial source/event & PA2 Section 6.2 NFR-09 failure injection \\ \hline
+NFR-10 & \texttt{booking\_events}; C08 & S04; S06 & Immutable booking events and stable ordering & PA2 Section 6.2 NFR-10 event inspection \\ \hline
+NFR-11 & M02; C03; CT1 errors & S03; S06--S08 & FieldErrors, preserved non-sensitive values & PA2 Section 6.2 NFR-11 boundary cases \\ \hline
+NFR-12 & CT1 i18n; ADR-004 & S01--S08 & Vietnamese labels and visible local zone & PA2 Section 6.2 NFR-12 inventory \\ \hline
+\end{longtable}
+\endgroup
+
+\subsection{Business Rules}
+\begingroup
+\small
+\setstretch{1.0}
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.07\textwidth}|>{\raggedright\arraybackslash}p{0.20\textwidth}|>{\raggedright\arraybackslash}p{0.12\textwidth}|>{\raggedright\arraybackslash}p{0.36\textwidth}|>{\raggedright\arraybackslash}p{0.18\textwidth}|}
+\hline
+\textbf{Rule} & \textbf{Design realization} & \textbf{Screen} & \textbf{Mechanism} & \textbf{Planned verification} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Rule} & \textbf{Design realization} & \textbf{Screen} & \textbf{Mechanism} & \textbf{Planned verification} \\
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+BR-01 & M01; C07; C04 & S01; S03 & Seeded roles; one request owner and room & AC-01; AC-06 \\ \hline
+BR-02 & M06; C03 & S03; S06 & Local opening-hour check & AC-07 \\ \hline
+BR-03 & M06; C03; ADR-004 & S03; S06 & Start increment and permitted duration list & AC-07 plus discrete-duration cases \\ \hline
+BR-04 & M06; C03; C08 & S03; S06 & Decision clock after room lock & AC-07; AC-11 \\ \hline
+BR-05 & C02; C03; C05; SQ04 & S02; S03; S06; S07 & Current capacity; future booking safety & AC-04; AC-07; AC-15 \\ \hline
+BR-06 & C03; \texttt{room\_occupancy} & S02; S03; S06; S08 & Half-open \texttt{tstzrange} [start, end) & AC-07; AC-11; AC-17 \\ \hline
+BR-07 & C04; DB01 & S02; S03; S06 & Only Approved bookings and active maintenance occupy & AC-05; AC-06; AC-11 \\ \hline
+BR-08 & C08; ADR-002; SQ02 & S06; S08 & Atomic current-data approval & AC-11; AC-12 \\ \hline
+BR-09 & C01; U05 & S03; S04; S06 & Four-state transition guards & AC-06; AC-09--14 \\ \hline
+BR-10 & C01; C04; SQ03 & S04; S06 & Before-start cancellation; late Pending rejection & AC-09; AC-13; AC-14 \\ \hline
+BR-11 & C05; U06 & S03; S06; S07 & Suspension gate; no occupancy removed & AC-16 \\ \hline
+BR-12 & M02 command DTOs; C01 & S03; S04; S06 & No direct room/time edit or admin impersonation & AC-14; API route inspection \\ \hline
+BR-13 & C01; C06; C10 & S06; S08 & Trim reason; maintenance time rules separate & AC-13; AC-14; AC-17 \\ \hline
+BR-14 & C02; C05; SQ04 & S07 & Unique normalized room code and safe edit & AC-15 \\ \hline
+BR-15 & C06; SQ05; DB01 & S06; S08 & Explicit cancellation; retained removed block & AC-12; AC-17; AC-18 \\ \hline
+BR-16 & C14; \texttt{booking\_events} & S02; S04; S05; S06 & Owner/admin detail; safe shared DTO & AC-02; AC-05; AC-08 \\ \hline
+\end{longtable}
+\endgroup
+
+\textbf{Scope and verification note:} History retention scopes remain strictly separated. NFR-10 maps exclusively to immutable, append-only booking lifecycle events (\texttt{booking\_events}), whereas maintenance record retention is traced independently through FR-26, BR-15, and AC-18. Removed records remain soft-retained in \texttt{maintenance\_blocks}, while only the active \texttt{room\_occupancy} projection is deleted; this does not silently expand NFR-10. For PA4 test design, capacity-edit race conditions and all discrete duration boundaries (30, 60, 90, and 120 minutes) must be instantiated as concrete test cases. No test IDs or passing results are claimed in this design baseline.
+
+\clearpage
