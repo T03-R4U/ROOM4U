@@ -1,0 +1,73 @@
+// U02 Booking command package (design classes) - Room4U PA3 section 5 (Graphviz)
+// Render: dot -Tpng -Gdpi=200 U02.dot -o U02.png
+digraph G {
+  graph [fontname="Arial", fontsize=10, forcelabels=true, nodesep=0.35, ranksep=0.75, pad=0.2, splines=true, bgcolor="white"];
+  node  [shape=plaintext, fontname="Arial", fontsize=10];
+  edge  [fontname="Arial", fontsize=10, color="#3D5A73", fontcolor="#1F2D3A", arrowsize=0.8];
+  C09 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«controller»</FONT><BR/><B>C09 ApiController</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">+ submit(body, actor): Response<BR ALIGN="LEFT"/>+ approve(id, actor): Response<BR ALIGN="LEFT"/>+ reject(id, body, actor): Response<BR ALIGN="LEFT"/>+ cancel(id, body, actor): Response<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  C04 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«service»</FONT><BR/><B>C04 BookingService</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">- uowFactory: () → UnitOfWork<BR ALIGN="LEFT"/>- policy: EligibilityPolicy<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">+ submit(cmd, actor): RequestDTO<BR ALIGN="LEFT"/>+ approve(id, actor): RequestDTO<BR ALIGN="LEFT"/>+ reject(id, reason, actor): RequestDTO<BR ALIGN="LEFT"/>+ cancel(id, reason, actor): RequestDTO<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  C03 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«policy»</FONT><BR/><B>C03 EligibilityPolicy</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">- timeZone: String<BR ALIGN="LEFT"/>- openTime, closeTime: LocalTime<BR ALIGN="LEFT"/>- durations: int[]<BR ALIGN="LEFT"/>- advanceDays: int<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">+ validate(candidate, ctx): EligibilityResult<BR ALIGN="LEFT"/>+ validateTime(interval, now): RuleViolation[]<BR ALIGN="LEFT"/>+ findConflicts(interval, occupied): Occupancy[]<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  C08 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«persistence»</FONT><BR/><B>C08 UnitOfWork</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">- pool: PgPool<BR ALIGN="LEFT"/>- client: PgClient [0..1]<BR ALIGN="LEFT"/>- transactionState: TxState<BR ALIGN="LEFT"/>- clock: Clock<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">+ roomIdOf(target): UUID<BR ALIGN="LEFT"/>+ findBySubmission(ownerId, key): BookingRequest [0..1]<BR ALIGN="LEFT"/>+ begin(roomId [0..1]): void<BR ALIGN="LEFT"/>+ loadContext(query): DecisionContext<BR ALIGN="LEFT"/>+ saveChanges(changeSet): void<BR ALIGN="LEFT"/>+ commit(): void<BR ALIGN="LEFT"/>+ rollback(): void<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  C01 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«entity»</FONT><BR/><B>C01 BookingRequest</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">- id: UUID<BR ALIGN="LEFT"/>- ownerId: UUID<BR ALIGN="LEFT"/>- roomId: UUID<BR ALIGN="LEFT"/>- interval: TimeInterval<BR ALIGN="LEFT"/>- groupSize: int<BR ALIGN="LEFT"/>- purpose: PurposeCode<BR ALIGN="LEFT"/>- note: String [0..1]<BR ALIGN="LEFT"/>- status: BookingStatus<BR ALIGN="LEFT"/>- submissionKey: UUID<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5"><U>+ create(cmd, actor, now): ChangeSet</U><BR ALIGN="LEFT"/>+ candidate(): BookingCandidate<BR ALIGN="LEFT"/>+ matchesSubmission(cmd): boolean<BR ALIGN="LEFT"/>+ approve(actor, now, result): ChangeSet<BR ALIGN="LEFT"/>+ reject(actor, reason, now): ChangeSet<BR ALIGN="LEFT"/>+ cancel(actor, now, reason): ChangeSet<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  C02 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«entity»</FONT><BR/><B>C02 Room</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">(full members in U03)<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  C11 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«entity»</FONT><BR/><B>C11 Account</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">- id: UUID<BR ALIGN="LEFT"/>- firebaseUid: String<BR ALIGN="LEFT"/>- fullName: String<BR ALIGN="LEFT"/>- role: Role<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  C13 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«entity»</FONT><BR/><B>C13 BookingEvent</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">- id: long<BR ALIGN="LEFT"/>- requestId, actorId: UUID<BR ALIGN="LEFT"/>- occurredAt: Instant<BR ALIGN="LEFT"/>- previousStatus [0..1]<BR ALIGN="LEFT"/>- newStatus: BookingStatus<BR ALIGN="LEFT"/>- reason: String [0..1]<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5"><U>+ record(...): BookingEvent</U><BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  { rank=same; C09; C04; C03; }
+  { rank=same; C08; C01; }
+  { rank=same; C02; C11; C13; }
+  C08 -> C01 [style=invis];
+  C02 -> C11 [style=invis];
+  C09 -> C04 [style=dashed, arrowhead=vee, label=" «use» "];
+  C04 -> C03 [arrowhead=vee, label="  ", taillabel="0..*", headlabel="1", labeldistance=1.6, labelangle=-30, xlabel=" policy "];
+  C04 -> C08 [style=dashed, arrowhead=vee, label=" «create» one per command "];
+  C04 -> C01 [style=dashed, arrowhead=vee, label=" «use» "];
+  C01 -> C02 [arrowhead=vee, label=" roomId ", taillabel="0..*", headlabel="1", labeldistance=1.6, labelangle=35];
+  C01 -> C11 [arrowhead=vee, label=" ownerId ", taillabel="0..*", headlabel="1", labeldistance=1.6, labelangle=35];
+  C01 -> C13 [dir=both, arrowtail=diamond, arrowhead=vee, label=" history ", taillabel="1", headlabel="1..*", labeldistance=1.6, labelangle=35];
+  C13 -> C11 [arrowhead=vee, label="  ", taillabel="0..*", headlabel="1", labeldistance=1.6, labelangle=-30, xlabel=" actorId "];
+}

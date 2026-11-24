@@ -1,0 +1,43 @@
+%% SQ01 (1/2) UC-04 Submit booking request: authorization and replay check
+%% Render: mmdc -c cfg-word.json -i SQ01a.mmd -o SQ01a.png -s 2 -b white
+sequenceDiagram
+  actor St as Student
+  participant UI as CT1<br/>Web UI
+  participant C as C09<br/>ApiController
+  participant Au as C07<br/>AuthService
+  participant BS as C04<br/>BookingService
+  participant U as C08<br/>UnitOfWork
+  participant BR as C01<br/>BookingRequest
+  St->>UI: confirm form
+  UI->>+C: POST /requests<br/>+ ID token
+  C->>+Au: authorize(token,<br/>Student)
+  Au-->>-C: actor
+  Note over C,Au: 401 invalid token,<br/>403 wrong role
+  C->>+BS: submit(cmd, actor)
+  BS->>+U: findBySubmission(ownerId, key)
+  U-->>-BS: existing [0..1]
+  alt same owner/key already used
+    BS->>+BR: matchesSubmission(cmd)
+    BR-->>-BS: true / false
+    BS-->>C: existing request +<br/>current status, or KEY_REUSED
+    C-->>UI: 200 same data /<br/>409 different data
+  else new submission
+    BS->>+U: begin(cmd.roomId)
+    Note right of U: room row<br/>FOR UPDATE
+    U-->>-BS: guard held
+    BS->>+U: findBySubmission(ownerId, key)
+    Note right of U: recheck: first lookup<br/>may predate a commit<br/>made while waiting
+    U-->>-BS: existing [0..1]
+    alt key committed while<br/>waiting for the guard
+      BS->>U: rollback()
+      BS->>+BR: matchesSubmission(cmd)
+      BR-->>-BS: true / false
+      BS-->>C: existing request +<br/>current status, or KEY_REUSED
+      C-->>UI: 200 same data /<br/>409 different data
+    else key still unused
+      Note over BS,BR: ref: SQ01 (2/2)<br/>validate and save under the guard
+    end
+  end
+  deactivate BS
+  deactivate C
+  UI-->>St: show outcome

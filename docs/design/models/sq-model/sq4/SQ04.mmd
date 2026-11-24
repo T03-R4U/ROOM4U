@@ -1,0 +1,36 @@
+%% SQ04 UC-11 Edit room details - Room4U PA3 section 5 (Mermaid)
+%% Render: mmdc -c cfg.json -i SQ04.mmd -o SQ04.png -s 2 -b white
+sequenceDiagram
+  actor Ad as Administrator
+  participant UI as CT1<br/>Web UI
+  participant C as C09<br/>ApiController
+  participant RS as C05<br/>RoomService
+  participant U as C08<br/>UnitOfWork
+  participant R as C02<br/>Room
+  Ad->>UI: edit details, Save
+  UI->>+C: PATCH /admin/rooms/<br/>{id} + ID token
+  Note over UI,C: ref: SQ01 authorization<br/>(role Administrator)
+  C->>+RS: saveRoom(cmd, actor)
+  RS->>+U: begin(roomId)
+  U-->>-RS: guard held
+  RS->>+U: loadContext(query)
+  U-->>-RS: ctx
+  RS->>+R: applyDetails(cmd, ctx)
+  alt invalid fields or equipment codes
+    R-->>RS: violations
+    RS->>U: rollback()
+    C-->>UI: 422 field errors
+  else code in use, or capacity <<br/>ctx.maxFutureGroup
+    R-->>RS: conflict
+    RS->>U: rollback()
+    C-->>UI: 409 conflict
+  else valid details
+    R-->>-RS: changeSet
+    RS->>U: saveChanges(changeSet)
+    RS->>U: commit()
+    RS-->>C: RoomDTO
+    C-->>UI: 200 saved
+  end
+  deactivate RS
+  deactivate C
+  UI-->>Ad: show result

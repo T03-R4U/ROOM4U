@@ -1,0 +1,70 @@
+%% SQ01 UC-04 Submit booking request - Room4U PA3 section 5 (Mermaid)
+%% Render: mmdc -c cfg.json -i SQ01.mmd -o SQ01.png -s 2 -b white
+sequenceDiagram
+  actor St as Student
+  participant UI as CT1<br/>Web UI
+  participant C as C09<br/>ApiController
+  participant Au as C07<br/>AuthService
+  participant BS as C04<br/>BookingService
+  participant U as C08<br/>UnitOfWork
+  participant P as C03<br/>EligibilityPolicy
+  participant BR as C01<br/>BookingRequest
+  St->>UI: confirm form
+  UI->>+C: POST /requests<br/>+ ID token
+  C->>+Au: authorize(token,<br/>Student)
+  Au-->>-C: actor
+  Note over C,Au: 401 invalid token,<br/>403 wrong role
+  C->>+BS: submit(cmd, actor)
+  BS->>+U: findBySubmission(ownerId, key)
+  U-->>-BS: existing [0..1]
+  alt same owner/key already used
+    BS->>+BR: matchesSubmission(cmd)
+    BR-->>-BS: true / false
+    BS-->>C: existing request +<br/>current status, or KEY_REUSED
+    C-->>UI: 200 same data /<br/>409 different data
+  else new submission
+    BS->>+U: begin(cmd.roomId)
+    Note right of U: room row<br/>FOR UPDATE
+    U-->>-BS: guard held
+    BS->>+U: findBySubmission(ownerId, key)
+    Note right of U: recheck: the first lookup<br/>may predate a commit<br/>made while waiting
+    U-->>-BS: existing [0..1]
+    alt key committed while<br/>waiting for the guard
+      BS->>U: rollback()
+      BS->>+BR: matchesSubmission(cmd)
+      BR-->>-BS: true / false
+      BS-->>C: existing request +<br/>current status, or KEY_REUSED
+      C-->>UI: 200 same data /<br/>409 different data
+    else key still unused
+      BS->>+U: loadContext(query)
+      U-->>-BS: ctx
+      BS->>+P: validate(candidate, ctx)
+      P-->>-BS: result
+      alt result.eligible
+        BS->>+BR: create(cmd, actor, ctx.now)
+        BR-->>-BS: changeSet
+        BS->>U: saveChanges(changeSet)
+        alt saved
+          BS->>U: commit()
+          BS-->>C: RequestDTO
+          C-->>UI: 201 Pending
+        else unique-key conflict<br/>(race with another room)
+          BS->>U: rollback()
+          BS->>+U: findBySubmission(ownerId, key)
+          Note right of U: reread after<br/>rollback
+          U-->>-BS: existing
+          BS->>+BR: matchesSubmission(cmd)
+          BR-->>-BS: true / false
+          BS-->>C: existing request +<br/>current status, or KEY_REUSED
+          C-->>UI: 200 same data /<br/>409 different data
+        end
+      else violation or conflict
+        BS->>U: rollback()
+        BS-->>C: violations
+        C-->>UI: 422 / 409
+      end
+    end
+  end
+  deactivate BS
+  deactivate C
+  UI-->>St: show outcome

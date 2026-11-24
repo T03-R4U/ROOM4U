@@ -1,0 +1,38 @@
+%% SQ03 UC-06 Cancel own request - Room4U PA3 section 5 (Mermaid)
+%% Render: mmdc -c cfg.json -i SQ03.mmd -o SQ03.png -s 2 -b white
+sequenceDiagram
+  actor St as Student
+  participant UI as CT1<br/>Web UI
+  participant C as C09<br/>ApiController
+  participant BS as C04<br/>BookingService
+  participant U as C08<br/>UnitOfWork
+  participant BR as C01<br/>BookingRequest
+  St->>UI: Cancel, confirm
+  UI->>+C: POST /requests/{id}/<br/>cancel + ID token
+  Note over UI,C: ref: SQ01 authorization<br/>(Student or Administrator)
+  C->>+BS: cancel(id, none, actor)
+  BS->>+U: roomIdOf(id)
+  U-->>-BS: roomId
+  BS->>+U: begin(roomId)
+  U-->>-BS: guard held
+  BS->>+U: loadContext(query)
+  U-->>-BS: ctx
+  BS->>+BR: cancel(actor, ctx.now, none)
+  alt owner, Pending/Approved,<br/>now < startAt
+    BR-->>BS: changeSet
+    BS->>U: saveChanges(changeSet)
+    BS->>U: commit()
+    BS-->>C: RequestDTO
+    C-->>UI: 200 Cancelled
+  else not the owner
+    BR-->>BS: NOT_OWNER
+    BS->>U: rollback()
+    C-->>UI: 403
+  else terminal or started
+    BR-->>-BS: INVALID_TRANSITION
+    BS->>U: rollback()
+    C-->>UI: 409 + current status
+  end
+  deactivate BS
+  deactivate C
+  UI-->>St: refresh request
