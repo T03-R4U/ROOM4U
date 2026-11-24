@@ -1,0 +1,48 @@
+%% SQ05 UC-13 Create maintenance block - Room4U PA3 section 5 (Mermaid)
+%% Render: mmdc -c cfg.json -i SQ05.mmd -o SQ05.png -s 2 -b white
+sequenceDiagram
+  actor Ad as Administrator
+  participant UI as CT1<br/>Web UI
+  participant C as C09<br/>ApiController
+  participant MS as C06<br/>MaintenanceService
+  participant U as C08<br/>UnitOfWork
+  participant MB as C10<br/>MaintenanceBlock
+  Ad->>UI: start, end, reason
+  UI-->>Ad: show summary,<br/>ask confirmation
+  Ad->>UI: confirm create
+  UI->>+C: POST /admin/rooms/{id}/<br/>maintenance + ID token
+  Note over UI,C: ref: SQ01 authorization<br/>(role Administrator)
+  C->>+MS: createMaintenance(cmd, actor)
+  MS->>+U: begin(roomId)
+  U-->>-MS: guard held
+  MS->>+U: loadContext(query)
+  U-->>-MS: ctx
+  MS->>+MB: create(cmd, actor, ctx.occupancy)
+  alt end ≤ start or invalid reason
+    MB-->>MS: violations
+    MS->>U: rollback()
+    MS-->>C: violations
+    C-->>UI: 422 field errors
+  else overlaps an Approved booking
+    MB-->>MS: conflict + affected bookings
+    MS->>U: rollback()<br/>(block not created)
+    MS-->>C: conflict + affected bookings
+    C-->>UI: 409 + affected bookings
+    Note over UI,C: bookings unchanged.<br/>Administrator cancels them via UC-10,<br/>then creates the block again
+  else overlaps an Active block
+    MB-->>MS: conflict + existing block
+    MS->>U: rollback()<br/>(block not created)
+    MS-->>C: conflict + existing block
+    C-->>UI: 409 + conflicting block
+    Note over UI,C: existing block unchanged.<br/>Administrator adjusts<br/>the time window
+  else valid data and no overlap
+    MB-->>MS: changeSet
+    MS->>U: saveChanges(changeSet)
+    MS->>U: commit()
+    MS-->>C: BlockDTO
+    C-->>UI: 201 Active block
+  end
+  deactivate MB
+  deactivate MS
+  deactivate C
+  UI-->>Ad: show outcome,<br/>refresh schedule

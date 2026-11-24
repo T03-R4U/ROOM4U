@@ -1,0 +1,55 @@
+// U01 Conceptual domain model - Room4U PA3 section 5 (Graphviz)
+// Render: dot -Tpng -Gdpi=200 U01.dot -o U01.png
+digraph G {
+  graph [fontname="Arial", fontsize=10, forcelabels=true, nodesep=0.35, ranksep=0.75, pad=0.2, splines=true, bgcolor="white"];
+  node  [shape=plaintext, fontname="Arial", fontsize=10];
+  edge  [fontname="Arial", fontsize=10, color="#3D5A73", fontcolor="#1F2D3A", arrowsize=0.8];
+  Account [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><B>Account</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">email<BR ALIGN="LEFT"/>fullName<BR ALIGN="LEFT"/>studentCode [0..1]<BR ALIGN="LEFT"/>phone [0..1]<BR ALIGN="LEFT"/>role : Student | Administrator<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  Room [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><B>Room</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">code<BR ALIGN="LEFT"/>name<BR ALIGN="LEFT"/>floor [0..1]<BR ALIGN="LEFT"/>capacity<BR ALIGN="LEFT"/>description [0..1]<BR ALIGN="LEFT"/>photo [0..1]<BR ALIGN="LEFT"/>state : active | suspended<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  Equipment [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«enumeration»</FONT><BR/><B>EquipmentType</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">WHITEBOARD<BR ALIGN="LEFT"/>DISPLAY_SCREEN<BR ALIGN="LEFT"/>POWER_OUTLET<BR ALIGN="LEFT"/>AIR_CONDITIONER<BR ALIGN="LEFT"/>WIFI<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  Request [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><B>BookingRequest</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">startAt<BR ALIGN="LEFT"/>endAt<BR ALIGN="LEFT"/>groupSize<BR ALIGN="LEFT"/>purpose<BR ALIGN="LEFT"/>note [0..1]<BR ALIGN="LEFT"/>status : Pending | Approved |<BR ALIGN="LEFT"/>         Rejected | Cancelled<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  Event [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><B>BookingEvent</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">occurredAt<BR ALIGN="LEFT"/>previousStatus [0..1]<BR ALIGN="LEFT"/>newStatus<BR ALIGN="LEFT"/>reason [0..1]<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  Block [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><B>MaintenanceBlock</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">startAt<BR ALIGN="LEFT"/>endAt<BR ALIGN="LEFT"/>reason<BR ALIGN="LEFT"/>state : active | removed<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  graph [nodesep=1.3];
+  { rank=same; Equipment; Room; }
+  { rank=same; Request; Block; }
+  { rank=same; Event; Account; }
+  Room -> Equipment [dir=none, label=" is equipped with ", taillabel="0..*", headlabel="0..*", labeldistance=1.4, labelangle=-35];
+  Room -> Request [dir=none, label=" is requested in ", taillabel="1", headlabel="0..*", labeldistance=1.6, labelangle=35];
+  Room -> Block [dir=none, label=" is blocked by ", taillabel="1", headlabel="0..*", labeldistance=1.6, labelangle=35];
+  Request -> Event [dir=back, arrowtail=diamond, label=" records ", taillabel="1", headlabel="1..*", labeldistance=1.6, labelangle=35];
+  Request -> Account [dir=none, label=" submits ", taillabel="0..*", headlabel="1", labeldistance=1.6, labelangle=35];
+  Block -> Account [dir=none, label=" creates ", taillabel="0..*", headlabel="1", labeldistance=1.6, labelangle=35];
+  Block -> Account [dir=none, label=" removes ", taillabel="0..*", headlabel="0..1", labeldistance=1.6, labelangle=35];
+  Event -> Account [dir=none, label=" performs ", taillabel="0..*", headlabel="1", labeldistance=1.4, labelangle=-35];
+}

@@ -1,0 +1,25 @@
+// U06 Room and maintenance block state machines - Room4U PA3 section 5 (Graphviz)
+// Render: dot -Tpng -Gdpi=200 U06.dot -o U06.png
+digraph G {
+  graph [fontname="Arial", fontsize=11, nodesep=0.6, ranksep=0.65, pad=0.2, bgcolor="white", rankdir=TB];
+  node  [shape=box, style="rounded,filled", fillcolor="#EAF2FA", color="#456789", fontname="Arial", fontsize=11, margin="0.18,0.08"];
+  edge  [fontname="Arial", fontsize=10, color="#3D5A73", fontcolor="#1F2D3A", arrowhead=vee, arrowsize=0.8];
+  compound=true;
+  subgraph cluster_room { label=<<B>Room state (C02)</B>>; color="#456789"; style=rounded; fontname="Arial"; margin=14;
+    r0 [shape=circle, style=filled, fillcolor="#1F2D3A", width=0.18, label="", fixedsize=true];
+    RActive [label=<<B>Active</B><BR/><FONT POINT-SIZE="9">accepts submissions and approvals</FONT>>];
+    RSusp [label=<<B>Suspended</B><BR/><FONT POINT-SIZE="9">refuses new submissions and approvals</FONT>>];
+    r0 -> RActive [label=" create room [valid details]\l"];
+    RActive -> RSusp [label=" suspend [confirmed]\l / keep bookings and blocks\l"];
+    RSusp -> RActive [label=" resume [confirmed]\l / keep bookings and blocks\l"];
+  }
+  subgraph cluster_block { label=<<B>Maintenance block state (C10)</B>>; color="#456789"; style=rounded; fontname="Arial"; margin=14;
+    b0 [shape=circle, style=filled, fillcolor="#1F2D3A", width=0.18, label="", fixedsize=true];
+    b1 [shape=doublecircle, style=filled, fillcolor="#1F2D3A", width=0.14, label="", fixedsize=true];
+    BActive [label=<<B>Active</B><BR/><FONT POINT-SIZE="9">occupies its interval</FONT>>];
+    BRemoved [label=<<B>Removed</B><BR/><FONT POINT-SIZE="9">record retained; no occupancy</FONT>>];
+    b0 -> BActive [label=" create [end > start ∧ reason 1–250 ∧\l   no Approved/active-block overlap]\l / add occupancy\l"];
+    BActive -> BRemoved [label=" remove [confirmed ∧ now < startAt]\l / delete own occupancy,\l   record removedBy, removedAt\l"];
+    BRemoved -> b1;
+  }
+}

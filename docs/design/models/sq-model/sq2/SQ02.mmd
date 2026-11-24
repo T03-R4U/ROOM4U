@@ -1,0 +1,46 @@
+%% SQ02 UC-08 Approve booking request - Room4U PA3 section 5 (Mermaid)
+%% Render: mmdc -c cfg.json -i SQ02.mmd -o SQ02.png -s 2 -b white
+sequenceDiagram
+  actor Ad as Administrator
+  participant UI as CT1<br/>Web UI
+  participant C as C09<br/>ApiController
+  participant BS as C04<br/>BookingService
+  participant U as C08<br/>UnitOfWork
+  participant P as C03<br/>EligibilityPolicy
+  participant BR as C01<br/>BookingRequest
+  Ad->>UI: Approve, confirm
+  UI->>+C: POST /admin/requests/<br/>{id}/approve + ID token
+  Note over UI,C: ref: SQ01 authorization<br/>(role Administrator)
+  C->>+BS: approve(id, actor)
+  BS->>+U: roomIdOf(id)
+  U-->>-BS: roomId
+  BS->>+U: begin(roomId)
+  U-->>-BS: guard held
+  BS->>+U: loadContext(query)
+  U-->>-BS: ctx
+  BS->>+P: validate(candidate, ctx)
+  P-->>-BS: result
+  BS->>+BR: approve(actor, ctx.now, result)
+  alt Pending and result.eligible
+    BR-->>BS: changeSet
+    BS->>U: saveChanges(changeSet)
+    BS->>U: commit()
+    BS-->>C: RequestDTO
+    C-->>UI: 200 Approved
+  else already processed<br/>(no longer Pending)
+    BR-->>BS: refusal + current status
+    BS->>U: rollback()<br/>(no event written)
+    BS-->>C: conflict + current status
+    C-->>UI: 409 + current status
+    Note over UI,C: update the request<br/>to its current status
+  else Pending but not eligible<br/>(start time, room status,<br/>capacity or schedule conflict)
+    BR-->>BS: refusal + causes
+    BS->>U: rollback()<br/>(no event written)
+    BS-->>C: conflict + causes
+    C-->>UI: 409 + causes
+    Note over UI,C: show the causes,<br/>request stays Pending
+  end
+  deactivate BR
+  deactivate BS
+  deactivate C
+  UI-->>Ad: show outcome,<br/>refresh queue

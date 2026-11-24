@@ -1,0 +1,21 @@
+// U05 BookingRequest state machine - Room4U PA3 section 5 (Graphviz)
+// Render: dot -Tpng -Gdpi=200 U05.dot -o U05.png
+digraph G {
+  graph [fontname="Arial", fontsize=11, nodesep=0.6, ranksep=0.65, pad=0.2, bgcolor="white", rankdir=TB];
+  node  [shape=box, style="rounded,filled", fillcolor="#EAF2FA", color="#456789", fontname="Arial", fontsize=11, margin="0.18,0.08"];
+  edge  [fontname="Arial", fontsize=10, color="#3D5A73", fontcolor="#1F2D3A", arrowhead=vee, arrowsize=0.8];
+  init [shape=circle, style=filled, fillcolor="#1F2D3A", width=0.18, label="", fixedsize=true];
+  fin [shape=doublecircle, style=filled, fillcolor="#1F2D3A", width=0.14, label="", fixedsize=true];
+  Pending [label=<<B>Pending</B><BR/><FONT POINT-SIZE="9">no occupied interval</FONT>>];
+  Approved [label=<<B>Approved</B><BR/><FONT POINT-SIZE="9">occupies its interval</FONT>>];
+  Rejected [label=<<B>Rejected</B><BR/><FONT POINT-SIZE="9">terminal; no occupancy</FONT>>];
+  Cancelled [label=<<B>Cancelled</B><BR/><FONT POINT-SIZE="9">terminal; no occupancy</FONT>>];
+  init -> Pending [label=" submit [UC-14 eligible]\l / create request + creation event\l"];
+  Pending -> Approved [label=" approve [Admin ∧ UC-14 eligible at decision time]\l / add occupancy + event\l"];
+  Pending -> Rejected [label=" reject [Admin ∧ reason 1–250]\l / event with reason\l"];
+  Pending -> Cancelled [label=" cancel [owner ∧ now < startAt]\l / event\l"];
+  Approved -> Cancelled [label=" cancel [now < startAt ∧ (owner ∨\l   Admin with reason 1–250)]\l / release occupancy + event\l"];
+  Rejected -> fin;
+  Cancelled -> fin;
+  { rank=same; Approved; Rejected; }
+}

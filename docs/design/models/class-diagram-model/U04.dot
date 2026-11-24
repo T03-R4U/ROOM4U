@@ -1,0 +1,60 @@
+// U04 Access and query package - Room4U PA3 section 5 (Graphviz)
+// Render: dot -Tpng -Gdpi=200 U04.dot -o U04.png
+digraph G {
+  graph [fontname="Arial", fontsize=10, forcelabels=true, nodesep=0.35, ranksep=0.75, pad=0.2, splines=true, bgcolor="white"];
+  node  [shape=plaintext, fontname="Arial", fontsize=10];
+  edge  [fontname="Arial", fontsize=10, color="#3D5A73", fontcolor="#1F2D3A", arrowsize=0.8];
+  C09 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«controller»</FONT><BR/><B>C09 ApiController</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">+ me(actor): AccountDTO<BR ALIGN="LEFT"/>+ search(query, actor)<BR ALIGN="LEFT"/>+ schedule(roomId, date, actor)<BR ALIGN="LEFT"/>+ myRequests(query, actor)<BR ALIGN="LEFT"/>+ requestDetail(id, actor)<BR ALIGN="LEFT"/>+ queue(query, actor)<BR ALIGN="LEFT"/>+ maintenanceList(roomId, actor)<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  C07 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«service»</FONT><BR/><B>C07 AuthService</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">- gateway: FirebaseGateway<BR ALIGN="LEFT"/>- accounts: AccountRepository<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">+ authorize(token, requiredRole): AuthContext<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  C12 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«adapter»</FONT><BR/><B>C12 FirebaseGateway</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">- admin: FirebaseAdminApp<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">+ verifyIdToken(token): VerifiedIdentity<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  ARepo [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#FFFFFF">
+      <TR><TD BGCOLOR="#F4F7FB" CELLPADDING="5"><FONT POINT-SIZE="9">«interface»</FONT><BR/><B>AccountRepository</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">+ findByFirebaseUid(uid): Account [0..1]<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  C11 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«entity»</FONT><BR/><B>C11 Account</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">- id: UUID<BR ALIGN="LEFT"/>- firebaseUid: String<BR ALIGN="LEFT"/>- email, fullName: String<BR ALIGN="LEFT"/>- studentCode [0..1]<BR ALIGN="LEFT"/>- phone [0..1]<BR ALIGN="LEFT"/>- role: Role<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  C14 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«service»</FONT><BR/><B>C14 QueryService</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">- reads: ReadRepository<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">+ search(query, actor): RoomDTO[]<BR ALIGN="LEFT"/>+ schedule(roomId, date, actor): SlotDTO[]<BR ALIGN="LEFT"/>+ myRequests(query, actor): Page<BR ALIGN="LEFT"/>+ requestDetail(id, actor): RequestDetailDTO<BR ALIGN="LEFT"/>+ queue(query, actor): Page<BR ALIGN="LEFT"/>+ maintenance(roomId, actor): BlockDTO[]<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  RRepo [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#FFFFFF">
+      <TR><TD BGCOLOR="#F4F7FB" CELLPADDING="5"><FONT POINT-SIZE="9">«interface»</FONT><BR/><B>ReadRepository</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">+ rooms(filter)<BR ALIGN="LEFT"/>+ occupancy(roomId, day)<BR ALIGN="LEFT"/>+ requests(filter, page)<BR ALIGN="LEFT"/>+ requestWithEvents(id)<BR ALIGN="LEFT"/>+ blocks(roomId)<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  { rank=same; C07; C14; }
+  { rank=same; C12; ARepo; RRepo; }
+  C09 -> C07 [style=dashed, arrowhead=vee, label=" «middleware» authorize first "];
+  C09 -> C14 [style=dashed, arrowhead=vee, label=" «use» "];
+  C07 -> C12 [arrowhead=vee, label=" gateway ", taillabel="0..*", headlabel="1", labeldistance=1.6, labelangle=35];
+  C07 -> ARepo [arrowhead=vee, label=" accounts ", taillabel="0..*", headlabel="1", labeldistance=1.6, labelangle=35];
+  ARepo -> C11 [style=dashed, arrowhead=vee, label=" returns "];
+  C14 -> RRepo [arrowhead=vee, label=" reads ", taillabel="0..*", headlabel="1", labeldistance=1.6, labelangle=35];
+}

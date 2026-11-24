@@ -1,0 +1,59 @@
+// U03 Room and maintenance command package - Room4U PA3 section 5 (Graphviz)
+// Render: dot -Tpng -Gdpi=200 U03.dot -o U03.png
+digraph G {
+  graph [fontname="Arial", fontsize=10, forcelabels=true, nodesep=0.35, ranksep=0.75, pad=0.2, splines=true, bgcolor="white"];
+  node  [shape=plaintext, fontname="Arial", fontsize=10];
+  edge  [fontname="Arial", fontsize=10, color="#3D5A73", fontcolor="#1F2D3A", arrowsize=0.8];
+  C09 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«controller»</FONT><BR/><B>C09 ApiController</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">+ saveRoom(id [0..1], body, actor): Response<BR ALIGN="LEFT"/>+ setRoomState(id, state, actor): Response<BR ALIGN="LEFT"/>+ createMaintenance(roomId, body, actor): Response<BR ALIGN="LEFT"/>+ removeMaintenance(id, actor): Response<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  C05 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«service»</FONT><BR/><B>C05 RoomService</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">- uowFactory: () → UnitOfWork<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">+ saveRoom(cmd, actor): RoomDTO<BR ALIGN="LEFT"/>+ setRoomState(id, target, actor): RoomDTO<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  C06 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«service»</FONT><BR/><B>C06 MaintenanceService</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">- uowFactory: () → UnitOfWork<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">+ createMaintenance(cmd, actor): BlockDTO<BR ALIGN="LEFT"/>+ removeMaintenance(id, actor): BlockDTO<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  C08 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«persistence»</FONT><BR/><B>C08 UnitOfWork</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">(operations in U02)<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  C02 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«entity»</FONT><BR/><B>C02 Room</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">- id: UUID<BR ALIGN="LEFT"/>- code: String<BR ALIGN="LEFT"/>- name: String<BR ALIGN="LEFT"/>- floor: String [0..1]<BR ALIGN="LEFT"/>- capacity: int<BR ALIGN="LEFT"/>- description: String [0..1]<BR ALIGN="LEFT"/>- photoRef: String [0..1]<BR ALIGN="LEFT"/>- equipment: Set&lt;EquipmentCode&gt;<BR ALIGN="LEFT"/>- state: RoomState<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5"><U>+ create(cmd): ChangeSet</U><BR ALIGN="LEFT"/>+ applyDetails(cmd, ctx): ChangeSet<BR ALIGN="LEFT"/>+ setState(target): ChangeSet<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  C10 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" COLOR="#456789" BGCOLOR="#EAF2FA">
+      <TR><TD BGCOLOR="#D6E8FA" CELLPADDING="5"><FONT POINT-SIZE="9">«entity»</FONT><BR/><B>C10 MaintenanceBlock</B></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5">- id, roomId: UUID<BR ALIGN="LEFT"/>- interval: TimeInterval<BR ALIGN="LEFT"/>- reason: String<BR ALIGN="LEFT"/>- state: BlockState<BR ALIGN="LEFT"/>- createdBy: UUID<BR ALIGN="LEFT"/>- removedBy: UUID [0..1]<BR ALIGN="LEFT"/>- removedAt: Instant [0..1]<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD ALIGN="LEFT" BALIGN="LEFT" CELLPADDING="5"><U>+ create(cmd, actor, occupied): ChangeSet</U><BR ALIGN="LEFT"/>+ remove(actor, now): ChangeSet<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>>];
+
+  graph [nodesep=0.9];
+  { rank=same; C05; C08; C06; }
+  { rank=same; C02; C10; }
+  C05 -> C08 [style=invis]; C08 -> C06 [style=invis];
+  C09 -> C05 [style=dashed, arrowhead=vee, label=" «use» "];
+  C09 -> C06 [style=dashed, arrowhead=vee, label=" «use» "];
+  C05 -> C08 [style=dashed, arrowhead=vee, label=" «create» "];
+  C06 -> C08 [style=dashed, arrowhead=vee, label=" «create» "];
+  C05 -> C02 [style=dashed, arrowhead=vee, label=" «use» "];
+  C06 -> C10 [style=dashed, arrowhead=vee, label=" «use» "];
+  C10 -> C02 [arrowhead=vee, label="  ", taillabel="0..*", headlabel="1", labeldistance=2.2, labelangle=-30, xlabel=" roomId "];
+  C02 -> C10 [style=invis];
+}
