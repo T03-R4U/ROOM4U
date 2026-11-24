@@ -1,0 +1,111 @@
+% ==================================================
+% SECTION 3 — DESIGN OVERVIEW
+% ==================================================
+
+\section{Design Overview}
+
+Room4U is an independent web-based simulation for one university library. Student and Administrator accounts are created in advance. Students submit booking requests with Pending status, and Administrators manually approve or reject them. Pending requests do not reserve a room. Approved bookings and active maintenance blocks make their intervals unavailable. Adjacent intervals that only meet at an endpoint do not overlap. The system does not integrate with the real library or university SSO [P1, P2].
+
+The design uses a browser-based web client, a Node.js/Express backend API and a PostgreSQL database. Firebase Authentication provides identity verification, while the Room4U backend enforces application roles, request ownership and booking rules. Architectural responsibilities and deployment are detailed in Section 4, object-oriented models in Section 5, data structures in Section 6 and user interactions in Section 7.
+
+\subsection{Design Goals and Constraints}
+
+The following requirements have a significant influence on the design. The design responses describe how the system is intended to satisfy them; they do not represent measured implementation results.
+
+\begin{longtable}{|p{0.19\textwidth}|p{0.43\textwidth}|p{0.30\textwidth}|}
+\hline
+\textbf{Requirement driver} & \textbf{Design goal and response} & \textbf{Acceptance basis} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Requirement driver} & \textbf{Design goal and response} & \textbf{Acceptance basis} \\
+\hline
+\endhead
+FR-15--16; BR-08; NFR-03 &
+Coordinate concurrent room updates and revalidate current request, room and schedule data before committing an approval. &
+Conflicting approvals must not both succeed, and an Approved booking must not overlap active maintenance. \\
+\hline
+FR-21; BR-14 &
+Coordinate capacity changes with booking approvals and check current future Approved bookings when saving room details. &
+A future Approved booking must never have a group size greater than the room's saved capacity. \\
+\hline
+FR-02--04; NFR-02 &
+Enforce identity, role and ownership checks in the backend, and return only data the caller is permitted to view. &
+Invalid identity receives 401; role or ownership violations receive 403 without protected data disclosure. \\
+\hline
+FR-19; NFR-10 &
+Retain ordered booking-request creation and status-transition events with identifiable actors and timestamps. &
+Earlier events remain retrievable and are not overwritten by later actions. \\
+\hline
+NFR-09 &
+Commit related status, occupancy and history changes together, and preserve the prior state when validation or persistence fails. &
+Failed operations leave no partial state change or orphan history event. \\
+\hline
+NFR-01 &
+Support efficient room-search and own-request queries through suitable indexes, bounded responses and controlled database access. &
+P95 server response time is at most two seconds under the reference workload defined in PA2 Section 6.2. \\
+\hline
+NFR-04--05; NFR-07; NFR-11--12 &
+Provide Vietnamese, responsive interfaces with keyboard access, visible focus, labelled controls, understandable statuses and corrective error messages. &
+Accessibility, usability, browser compatibility and localization are verified against the conditions in PA2 Section 6.2. \\
+\hline
+NFR-06 &
+Use HTTPS and restrict the handling of credentials, identity tokens and application-controlled logs. &
+Source, repository history and application-controlled logs contain no prohibited secrets or full identity tokens; deployed application traffic uses HTTPS. \\
+\hline
+NFR-08 &
+Define a verified pre-demo backup and a documented database restoration procedure. &
+Restoration on the reference environment completes within 30 minutes and preserves records committed before the backup point. \\
+\hline
+\end{longtable}
+
+The initial demonstration dataset contains eight simulated rooms, two Student accounts and one Administrator account. The system supports up to 500 pre-created accounts. Since room creation is supported, eight rooms represent the initial dataset rather than a permanent maximum [P2].
+
+The reference environment is a Linux server with 2 vCPUs, 4 GB RAM and 20 GB storage, hosting one backend instance and one database. Node.js/Express, PostgreSQL and Firebase Authentication follow the technology baseline described in PA1 and PA2. Environment configuration and feasibility must be checked before deployment, and quality targets remain subject to verification [P1, P2].
+
+The design must remain feasible for a four-member student team within the PA1 schedule. PA3 design work is planned for course Weeks 6--7; the official submission date and time follow Moodle announcements. These constraints favour a small deployment and clearly separated responsibilities that support parallel development and review [P1].
+
+PA1 assumes free or student-tier development tools and a provisional hosting allowance of VND 500,000 for the course demonstration. Infrastructure choices must be assessed against this allowance and the reference environment. Changes affecting scope, cost or schedule follow the project change-control process [P1].
+
+\subsection{Accepted PA2 Decisions and Design Implications}
+
+The accepted PA2 Software Requirements Specification is the requirements baseline for this design. Decisions D01--D08 provide the booking policies and quality targets used throughout PA3 [P2].
+
+\begin{longtable}{|p{0.14\textwidth}|p{0.43\textwidth}|p{0.35\textwidth}|}
+\hline
+\textbf{PA2 decision} & \textbf{Baseline used in PA3} & \textbf{Design implications} \\
+\hline
+\endfirsthead
+\hline
+\textbf{PA2 decision} & \textbf{Baseline used in PA3} & \textbf{Design implications} \\
+\hline
+\endhead
+D01--D02 &
+Bookings fall within 08:00--20:00 on one local date. At submission and approval, now $<$ start $\leq$ now + 7 days. Start and end times use :00 or :30 marks, with durations of 30, 60, 90 or 120 minutes. &
+Centralized time validation uses the server's current decision time and Asia/Ho\_Chi\_Minh. Forms use duration input, and the backend derives the end time. \\
+\hline
+D03 &
+The measurable quality targets and verification conditions are defined in PA2 Section 6.2. &
+Architecture, queries, interfaces and operational procedures are designed to support these targets. Compliance requires subsequent measurement and evaluation. \\
+\hline
+D04 &
+Required rejection, administrator-cancellation and maintenance reasons contain 1--250 characters after trimming. Room capacity is an integer from 1 to 50. &
+Backend validation and appropriate database constraints enforce the limits. UI controls provide corresponding validation and corrective feedback. \\
+\hline
+D05 &
+Suspension blocks new submissions and approvals while preserving existing bookings. Capacity changes must remain consistent with future Approved bookings, including during concurrent approval. &
+Room-state changes, capacity edits and booking decisions use a coordinated update mechanism. Existing bookings are retained. \\
+\hline
+D06 &
+A maintenance block may be removed only while active and before its start, after confirmation. Its record is retained. &
+Maintenance has separate active and removed states. Removal releases only the block's occupancy effect and leaves booking records unchanged. \\
+\hline
+D07 &
+Student and Administrator cancellations require server now $<$ booking start. Past-start Pending requests remain visible but cannot be approved or Student-cancelled; Administrators may reject them. &
+Services check current status and server decision time before committing. The design introduces no automatic Expired status or expiry job. \\
+\hline
+D08 &
+Room IDs remain stable. Shared calendars do not expose other students' booking identities. Booking status history and processing reasons are retained. &
+Stable identifiers preserve references. Authorized DTOs restrict disclosure, and booking events are appended within the same transaction as request changes. \\
+\hline
+\end{longtable}

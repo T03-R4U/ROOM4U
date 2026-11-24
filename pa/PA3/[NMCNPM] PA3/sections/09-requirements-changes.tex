@@ -1,0 +1,35 @@
+\section{Changes to the Requirements Since the Previous Baseline}
+This section records UI/input-rule refinements and technical design realizations agreed upon since formal approval of the Room4U Software Requirements Specification (SRS), Version 1.0 (PA2 baseline).
+
+\textbf{Distinction between requirement scope and design realization:} The core functional and business policies established in the PA2 SRS v1.0 baseline remain intact: duration-based booking input; the four request lifecycle states (Pending, Approved, Rejected, and Cancelled); non-blocking Pending requests, with occupancy reserved only upon approval; and soft-retained \texttt{maintenance\_blocks} records after removal. Adding database columns or tables, such as user profile attributes or \texttt{room\_equipment}, to support fields already represented in UI screens, or adopting ADR-001 through ADR-005, represents a concrete technical realization or input-contract refinement rather than a new functional requirement or a silent rewrite of existing FR/BR definitions.
+
+\begingroup
+\footnotesize
+\setstretch{1.0}
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.07\textwidth}|>{\raggedright\arraybackslash}p{0.14\textwidth}|>{\raggedright\arraybackslash}p{0.29\textwidth}|>{\raggedright\arraybackslash}p{0.24\textwidth}|>{\raggedright\arraybackslash}p{0.20\textwidth}|}
+\hline
+\textbf{Item} & \textbf{Category} & \textbf{Nature of refinement / decision} & \textbf{Rationale} & \textbf{Affected items} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Item} & \textbf{Category} & \textbf{Nature of refinement / decision} & \textbf{Rationale} & \textbf{Affected items} \\
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+DR-01 & Technical design realization & Room-level lock guard (C08) paired with a shared \texttt{room\_occupancy} projection (\texttt{tstzrange} exclusion). & Makes existing concurrency, double-booking prevention, and safe capacity-edit requirements deterministic and executable at the database level. & ADR-002; FR-15--16, FR-21, FR-24--26; NFR-03, NFR-09; BR-06, BR-08. No new user operation. \\ \hline
+DR-02 & Technical design realization & Idempotency submission key and explicit replay response handling. & Guarantees one booking request and one initial \texttt{booking\_events} record when a client retries a logical submission after network interruption. & FR-11, FR-19; NFR-09; SQ01. Aligns API and PA4 retry-test expectations. \\ \hline
+DR-03 & Technical design realization & Concrete REST API DTO contracts, structured error codes (\texttt{FieldErrors}), and relational storage schemas, including the S07 administrative room-list/summary contract and S08 maintenance-conflict DTO. & Establishes unambiguous contracts across the web interface (CT1), domain policies, and PostgreSQL persistence without changing PA2 business rules. & Sections 4--8; FR-20, FR-24--27; S07, S08; NFR-11. Design detail, not a new requirement. \\ \hline
+DR-04 & UI/input-rule refinement (ADR-005) & Standardizes purpose selection as a fixed category-code list, stored as normalized codes in \texttt{booking\_requests} and mapped to localized Vietnamese UI labels; the note remains optional and is capped at 250 characters. & Eliminates free-text ambiguity for booking purposes while keeping validation uniform across frontend forms and backend command DTOs. & ADR-005; FR-10--12; S03, S04, S06; \texttt{booking\_requests} schema. Preserves existing eligibility rules. \\ \hline
+DR-05 & Technical design realization (ADR-005) & Extends the \texttt{users} table with profile fields to store and display requester identity details in authorized views. & Supports displaying permitted user information already expected by the UI without creating a separate user-management feature. & ADR-005; FR-01, FR-04, FR-12; BR-16; S04, S06; \texttt{users} schema. \\ \hline
+DR-06 & UI/input-rule refinement (ADR-005) & Removes the standalone Related course field from screen S04 (Request Detail) and removes room area/zone metadata while retaining floor information. & Streamlines request details and room metadata to align the UI with the agreed Room4U data model and avoid redundant input fields. & ADR-005; FR-06, FR-12; S02, S04, S07; rooms and \texttt{booking\_requests} UI/DTO contracts. \\ \hline
+DR-07 & UI/input-rule and data refinement (ADR-005) & Standardizes room amenities through the normalized \texttt{room\_equipment} table, with multi-select checkboxes on room management/search screens and multi-amenity filtering using strict AND semantics. & Replaces unstructured facility text with consistent equipment codes (\texttt{equipmentCodes}) and human-readable labels, ensuring search results match all selected amenities. & ADR-005; FR-06--07, FR-20--21; S02, S07; \texttt{room\_equipment} schema (AC-04, AC-15). \\ \hline
+CR Status & Baseline governance & Active design refinements DR-01--DR-07 are recorded; no formal PA2 FR/BR rewrite has been approved. The S07 list/summary and S08 conflict response are PA3 API/UI design details supporting existing screens and use cases; they do not add or change requirements. Other post-PA2 updates remain ADR-005 UI/input-contract refinements and ADR-001--ADR-005 technical realizations. & Avoids conflating UI field cleanups, API contract detail and schema realizations with formal requirement changes while keeping an explicit record of agreed adjustments. & Any future change to core PA2 rules, such as switching booking input from duration to explicit end time, must follow formal change control across PA2 SRS v1.0, UC-04/UC-14, S03, AC scenarios, and PA3. \\ \hline
+\end{longtable}
+\endgroup
+
+\clearpage

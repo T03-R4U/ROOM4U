@@ -1,0 +1,275 @@
+
+% !TEX program = xelatex
+
+\documentclass[12pt]{article}
+
+% ==================================================
+% 1. PAGE LAYOUT
+% ==================================================
+\usepackage[
+    letterpaper,
+    margin=0.75in,
+    headheight=14.5pt,
+    headsep=0.22in,
+    footskip=0.35in
+]{geometry}
+
+% ==================================================
+% 2. FONT AND LANGUAGE
+% ==================================================
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{TeX Gyre Termes}
+
+% ==================================================
+% 3. REQUIRED PACKAGES
+% ==================================================
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{environ}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{needspace}
+\usepackage{setspace}
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+% ==================================================
+% 4. DOCUMENT COLORS AND FORMATTING
+% ==================================================
+\definecolor{HCMUSBlue}{RGB}{0,112,192}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+\setstretch{1.5}
+
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+
+% ==================================================
+% 5. SECTION FORMATTING
+% ==================================================
+\titleformat{\section}
+    {\color{HCMUSBlue}\bfseries\fontsize{22}{27}\selectfont}
+    {\thesection}
+    {0.5em}
+    {}
+
+\titleformat{\subsection}
+    {\bfseries\fontsize{16}{20}\selectfont}
+    {\thesubsection}
+    {0.6em}
+    {}
+
+\titlespacing*{\section}
+    {0pt}{12pt}{6pt}
+
+\titlespacing*{\subsection}
+    {0pt}{10pt}{4pt}
+
+% ==================================================
+% 6. TABLE AND DOCUMENT COMMANDS
+% ==================================================
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+\newcommand{\blankcell}{\rule{0pt}{2.6ex}}
+
+\NewEnviron{srstable}[1]{%
+    \begin{center}
+        \small
+        \renewcommand{\arraystretch}{1.2}
+        \setlength{\tabcolsep}{4pt}
+        \begin{tabularx}{\textwidth}{|#1|}
+            \hline
+            \BODY
+        \end{tabularx}
+    \end{center}
+}
+
+\newcommand{\templatehint}[1]{%
+    \par\textit{#1}\par
+}
+
+\newcommand{\diagramplaceholder}[1]{%
+    \begin{center}
+        \fbox{%
+            \parbox[c][1.25in][c]{0.88\textwidth}{%
+                \centering\textit{#1}%
+            }%
+        }
+    \end{center}
+}
+
+% ==================================================
+% 7. TABLE OF CONTENTS
+% ==================================================
+\makeatletter
+
+\renewcommand{\tableofcontents}{%
+    \begin{center}
+        {\color{HCMUSBlue}
+        \bfseries
+        \fontsize{30}{36}\selectfont
+        Table of Contents\par}
+    \end{center}
+
+    \vspace{0.5\baselineskip}
+
+    {\setstretch{1.0}\@starttoc{toc}}%
+}
+
+\makeatother
+
+% ==================================================
+% 8. HEADER AND FOOTER
+% ==================================================
+\pagestyle{fancy}
+
+\fancyhf{}
+
+\fancyhead[L]{\small Introduction to Software Engineering}
+\fancyhead[R]{\small Room4U -- Software Design}
+
+\fancyfoot[L]{\small HCMUS}
+\fancyfoot[C]{\small SE Dept.}
+\fancyfoot[R]{\small\thepage}
+
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\setlength{\headheight}{14.5pt}
+
+% ==================================================
+% 9. DOCUMENT CONTENT
+% ==================================================
+% Reduce horizontal padding in tables
+\setlength{\tabcolsep}{3pt}
+
+% Improve automatic line breaking
+\usepackage{microtype}
+\setlength{\emergencystretch}{3em}
+
+
+\begin{document}
+
+\pagenumbering{roman}
+
+% --------------------------------------------------
+% 9.1. COVER PAGE
+% --------------------------------------------------
+\begin{titlepage}
+
+    \thispagestyle{empty}
+
+    \vspace*{0.35in}
+
+    \begin{center}
+
+        {\bfseries
+        \fontsize{22}{28}\selectfont
+        Introduction to Software Engineering\par}
+
+        \vspace{1.15in}
+
+        {\bfseries
+        \fontsize{24}{30}\selectfont
+        Software Design\par}
+
+    \end{center}
+
+    \vspace{0.65in}
+
+    {\fontsize{14}{20}\selectfont
+    The student team is required to complete the Software
+    Design documentation for the assigned course project,
+    following the attached template.\par}
+
+    \vfill
+
+    \begin{center}
+
+        \includegraphics[width=1.1in]{images/hcmus-logo.png}
+
+        \par\vspace{0.25in}
+
+        Software Engineering Department
+
+        \par\vspace{0.1in}
+
+        Faculty of Information and Technology
+
+        \par\vspace{0.1in}
+
+        University of Science
+
+    \end{center}
+
+\end{titlepage}
+
+% --------------------------------------------------
+% 9.2. TABLE OF CONTENTS
+% --------------------------------------------------
+\clearpage
+
+\newgeometry{margin=1in}
+
+\thispagestyle{empty}
+
+\tableofcontents
+
+\clearpage
+
+\restoregeometry
+
+% --------------------------------------------------
+% 9.3. MAIN DOCUMENT
+% --------------------------------------------------
+\pagenumbering{arabic}
+
+\pagestyle{fancy}
+
+\begin{center}
+    {\color{HCMUSBlue}
+    \bfseries
+    \fontsize{40}{48}\selectfont
+    Software Design\par}
+\end{center}
+
+% ==================================================
+% 10. PROJECT SECTIONS
+% ==================================================
+
+\input{sections/01-objectives}
+
+\input{sections/02-member-contribution-assessment}
+
+\input{sections/03-design-overview}
+
+\input{sections/04-architectural-design}
+
+\input{sections/05-object-oriented-design}
+
+\input{sections/06-data-design}
+
+\input{sections/07-user-interface-design}
+
+\input{sections/08-traceability-update}
+
+\input{sections/09-requirements-changes}
+
+\input{sections/10-ai-usage-log}
+
+%\input{sections/11-team-confirmations}
+
+\input{sections/12-references}
+
+% ==================================================
+% END OF DOCUMENT
+% ==================================================
+
+\end{document}
